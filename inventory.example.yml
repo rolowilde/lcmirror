@@ -1,0 +1,14 @@
+---
+mirrors:
+  children:
+    archlinux:
+      hosts:
+        arch1.example.com:
+        arch2.example.com:
+        arch3.example.com:
+      vars:
+        archlinux_target:
+        archlinux_source_url:
+        archlinux_lastupdate_url:
+        archlinux_schedule:
+          minute: 15

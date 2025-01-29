@@ -1,0 +1,32 @@
+---
+- name: Install required packages for Debian
+  ansible.builtin.apt:
+    name: "{{ caddy_debian_packages }}"
+    state: present
+    update_cache: true
+
+- name: Add Caddy GPG key
+  ansible.builtin.apt_key:
+    url: "{{ caddy_debian_key_url }}"
+    state: present
+
+- name: Fetch caddy-stable.list
+  ansible.builtin.uri:
+    url: "{{ caddy_debian_sources_url }}"
+    return_content: true
+  register: caddy_debian_sources_uri
+
+- name: Add Caddy repository
+  ansible.builtin.apt_repository:
+    repo: "{{ caddy_debian_sources_uri.content }}"
+    state: present
+    filename: caddy-stable.list
+
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: Install Caddy
+  ansible.builtin.apt:
+    name: caddy
+    state: present

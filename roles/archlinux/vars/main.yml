@@ -1,0 +1,3 @@
+---
+archlinux_packages: [bash, curl, rsync]
+archlinux_script_path: /usr/bin/mirrorsync-archlinux

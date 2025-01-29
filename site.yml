@@ -1,0 +1,9 @@
+---
+- name: Configure a repository mirror server
+  hosts: mirrors
+  become: true
+  roles:
+    - { role: update, tags: update }
+    - { role: cron, tags: cron }
+    - { role: archlinux, when: '"archlinux" in group_names', tags: archlinux }
+    - { role: caddy, tags: caddy }

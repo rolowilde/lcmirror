@@ -1,0 +1,48 @@
+---
+- name: Install packages
+  ansible.builtin.package:
+    name: "{{ archlinux_packages }}"
+    state: present
+
+- name: Create target directory
+  ansible.builtin.file:
+    path: "{{ archlinux_target }}"
+    mode: '0755'
+    state: directory
+
+- name: Install mirrorsync script
+  ansible.builtin.template:
+    src: mirrorsync.sh.j2
+    dest: "{{ archlinux_script_path }}"
+    mode: '0755'
+
+- name: Perform initial sync
+  ansible.builtin.command:
+    cmd: "{{ archlinux_script_path }}"
+    creates: "{{ archlinux_target }}/lastsync"
+  when: archlinux_initial_sync
+
+- name: Schedule cronjob
+  ansible.builtin.cron:
+    name: sync archlinux repo
+    job: "{{ archlinux_script_path }}"
+    minute: "{{ archlinux_schedule.minute | default('*') }}"
+    hour: "{{ archlinux_schedule.hour | default('*') }}"
+    day: "{{ archlinux_schedule.day | default('*') }}"
+    month: "{{ archlinux_schedule.month | default('*') }}"
+    weekday: "{{ archlinux_schedule.weekday | default('*') }}"
+  when:
+    - archlinux_schedule is defined
+    - archlinux_schedule is mapping
+  tags: cron
+
+- name: Expose directory to Caddy
+  ansible.builtin.blockinfile:
+    path: "{{ caddy_config_file }}"
+    content: |
+      {{ archlinux_vhost }} {
+          root * /srv
+          file_server browse
+      }
+    prepend_newline: true
+    append_newline: true

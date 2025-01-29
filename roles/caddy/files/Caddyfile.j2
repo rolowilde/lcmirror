@@ -1,0 +1,13 @@
+{
+    {% if caddy_email is defined and caddy_email %}
+    email {{ caddy_email }}
+    {% endif %}
+    {% if caddy_admin_access is defined and caddy_admin_access %}
+    admin {{ caddy_admin_access }}
+    {% endif %}
+    {% if caddy_access_log is defined and caddy_access_log %}
+    log {
+        output file {{ caddy_access_log }}
+    }
+    {% endif %}
+}

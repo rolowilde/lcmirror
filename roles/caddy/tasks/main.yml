@@ -1,0 +1,28 @@
+---
+- name: Include distribution-specific tasks
+  ansible.builtin.include_tasks: "{{ ansible_facts['os_family'] | lower }}.yml"
+
+- name: Enable and start caddy
+  ansible.builtin.service:
+    name: caddy
+    enabled: true
+    state: started
+
+- name: Create log directory
+  ansible.builtin.file:
+    path: "{{ caddy_access_log | dirname }}"
+    state: directory
+    owner: caddy
+    group: caddy
+    mode: '0755'
+  when: caddy_access_log is defined and caddy_access_log
+
+- name: Template the Caddyfile
+  ansible.builtin.template:
+    src: Caddyfile.j2
+    dest: "{{ caddy_config_file }}"
+    owner: caddy
+    group: caddy
+    mode: '0644'
+    validate: caddy validate --config %s
+  notify: restart caddy

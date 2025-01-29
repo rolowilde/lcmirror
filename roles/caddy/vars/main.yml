@@ -1,0 +1,9 @@
+---
+caddy_debian_packages: [debian-keyring, debian-archive-keyring, apt-transport-https, curl]
+caddy_debian_key_url: https://dl.cloudsmith.io/public/caddy/stable/gpg.key
+caddy_debian_sources_url: https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt
+
+caddy_redhat_copr_name: "@caddy/caddy"
+
+caddy_localhost: http://localhost:80
+caddy_config_file: /etc/caddy/Caddyfile

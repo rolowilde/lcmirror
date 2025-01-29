@@ -1,0 +1,16 @@
+---
+- name: Update a Debian system
+  ansible.builtin.package:
+    name: "*"
+    update_cache: true
+    only_upgrade: true
+    state: latest
+  when: ansible_os_family == "Debian"
+
+- name: Update a RedHat system
+  ansible.builtin.dnf:
+    name: "*"
+    update_cache: true
+    update_only: true
+    state: latest
+  when: ansible_os_family == "RedHat"
