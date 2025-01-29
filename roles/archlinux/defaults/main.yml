@@ -1,4 +1,5 @@
 ---
+archlinux_lock: /tmp/sync-archlinux.lck
 archlinux_initial_sync: false
 archlinux_save_lastsync: true
 archlinux_delay_updates: true
