@@ -8,14 +8,16 @@
     enabled: true
     state: started
 
-- name: Create log directory
+- name: Create log file
   ansible.builtin.file:
-    path: "{{ caddy_access_log | dirname }}"
-    state: directory
+    path: "/var/log/{{ caddy_global_options.log_filename }}"
+    state: touch
     owner: caddy
     group: caddy
-    mode: '0755'
-  when: caddy_access_log is defined and caddy_access_log
+    mode: '0644'
+  when:
+    - caddy_global_options.log_filename is defined
+    - caddy_global_options.log_filename
 
 - name: Append global options to Caddyfile
   ansible.builtin.blockinfile:
@@ -28,9 +30,9 @@
       {% if caddy_global_options.admin is defined and caddy_global_options.admin %}
           admin {{ caddy_global_options.admin }}
       {% endif %}
-      {% if caddy_global_options.access_log is defined and caddy_global_options.access_log %}
+      {% if caddy_global_options.log_filename is defined and caddy_global_options.log_filename %}
           log {
-              output file {{ caddy_global_options.access_log }}
+              output file /var/log/{{ caddy_global_options.log_filename }}
           }
       {% endif %}
       }
