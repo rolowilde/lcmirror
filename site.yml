@@ -5,5 +5,5 @@
   roles:
     - { role: update, tags: update }
     - { role: cron, tags: cron }
-    - { role: archlinux, when: '"archlinux" in group_names', tags: archlinux }
     - { role: caddy, tags: caddy }
+    - { role: archlinux, when: '"archlinux" in group_names', tags: archlinux }
