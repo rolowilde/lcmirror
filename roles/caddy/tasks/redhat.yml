@@ -1,6 +1,8 @@
 ---
 - name: Enable Caddy Copr repository
   community.general.copr:
+    host: "{{ caddy_redhat_copr_host }}"
+    chroot: "{{ caddy_redhat_copr_chroot }}"
     name: "{{ caddy_redhat_copr_name }}"
     state: enabled
 
