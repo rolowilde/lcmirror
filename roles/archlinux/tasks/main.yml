@@ -46,5 +46,6 @@
       }
     prepend_newline: true
     append_newline: true
+    validate: "{{ caddy_validation_command }}"
   notify: restart caddy
   tags: caddy
