@@ -41,7 +41,7 @@
     path: "{{ caddy_config_file }}"
     content: |
       {{ archlinux_vhost }} {
-          root * /srv
+          root * {{ archlinux_target }}
           file_server browse
       }
     prepend_newline: true
