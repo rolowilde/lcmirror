@@ -9,3 +9,4 @@ caddy_redhat_copr_name: "@caddy/caddy"
 
 caddy_localhost: http://localhost:80
 caddy_config_file: /etc/caddy/Caddyfile
+caddy_validation_command: caddy validate --config %s

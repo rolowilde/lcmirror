@@ -17,12 +17,27 @@
     mode: '0755'
   when: caddy_access_log is defined and caddy_access_log
 
-- name: Template the Caddyfile
-  ansible.builtin.template:
-    src: Caddyfile.j2
-    dest: "{{ caddy_config_file }}"
-    owner: caddy
-    group: caddy
-    mode: '0644'
-    validate: caddy validate --config %s
+- name: Append global options to Caddyfile
+  ansible.builtin.blockinfile:
+    path: "{{ caddy_config_file }}"
+    content: |
+      {
+          {% if caddy_global_options.email is defined and caddy_global_options.email %}
+          email {{ caddy_global_options.email }}
+          {% endif %}
+          {% if caddy_global_options.admin is defined and caddy_global_options.admin %}
+          admin {{ caddy_global_options.admin }}
+          {% endif %}
+          {% if caddy_global_options.access_log is defined and caddy_global_options.access_log %}
+          log {
+              output file {{ caddy_global_options.access_log }}
+          }
+          {% endif %}
+      }
+    prepend_newline: true
+    append_newline: true
+    validate: "{{ caddy_validation_command }}"
+  when:
+    - caddy_global_options is defined
+    - caddy_global_options is mapping
   notify: restart caddy
