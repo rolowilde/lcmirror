@@ -34,7 +34,7 @@
           }
           {% endif %}
       }
-    prepend_newline: true
+    insertbefore: BOF
     append_newline: true
     validate: "{{ caddy_validation_command }}"
     state: present
