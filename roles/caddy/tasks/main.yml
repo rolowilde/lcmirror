@@ -22,20 +22,21 @@
     path: "{{ caddy_config_file }}"
     content: |
       {
-          {% if caddy_global_options.email is defined and caddy_global_options.email %}
+      {% if caddy_global_options.email is defined and caddy_global_options.email %}
           email {{ caddy_global_options.email }}
-          {% endif %}
-          {% if caddy_global_options.admin is defined and caddy_global_options.admin %}
+      {% endif %}
+      {% if caddy_global_options.admin is defined and caddy_global_options.admin %}
           admin {{ caddy_global_options.admin }}
-          {% endif %}
-          {% if caddy_global_options.access_log is defined and caddy_global_options.access_log %}
+      {% endif %}
+      {% if caddy_global_options.access_log is defined and caddy_global_options.access_log %}
           log {
               output file {{ caddy_global_options.access_log }}
           }
-          {% endif %}
+      {% endif %}
       }
     insertbefore: BOF
     append_newline: true
+    marker: "# {mark} ANSIBLE MANAGED BLOCK global"
     validate: "{{ caddy_validation_command }}"
     state: present
   when:

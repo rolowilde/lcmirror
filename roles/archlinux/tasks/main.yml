@@ -46,6 +46,7 @@
       }
     prepend_newline: true
     append_newline: true
+    marker: "# {mark} ANSIBLE MANAGED BLOCK archlinux"
     validate: "{{ caddy_validation_command }}"
     state: present
   notify: restart caddy
