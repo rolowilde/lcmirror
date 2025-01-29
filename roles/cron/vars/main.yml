@@ -6,3 +6,11 @@ cron_service_redhat: crond
 
 cron_package: "{{ lookup('ansible.builtin.vars', 'cron_package_' + ansible_os_family | lower) }}"
 cron_service: "{{ lookup('ansible.builtin.vars', 'cron_service_' + ansible_os_family | lower) }}"
+
+# will never execute
+cron_dummy_schedule:
+  minute: 0
+  hour: 0
+  day: 29
+  month: 2
+  weekday: 1
