@@ -46,4 +46,5 @@
       }
     prepend_newline: true
     append_newline: true
+  notify: restart caddy
   tags: caddy
