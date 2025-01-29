@@ -41,6 +41,9 @@
     path: "{{ caddy_config_file }}"
     content: |
       {{ archlinux_vhost }} {
+      {% if caddy_global_options.log_filename is defined and caddy_global_options.log_filename %}
+          log
+      {% endif %}
           root * {{ archlinux_target }}
           file_server browse
       }
