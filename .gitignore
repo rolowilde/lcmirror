@@ -1,4 +1,5 @@
 .ansible/
 .vscode/
 .idea/
+.vagrant/
 venv/
