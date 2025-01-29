@@ -1,0 +1,13 @@
+---
+- name: Install rsync
+  ansible.builtin.package:
+    name: rsync
+    state: present
+
+- name: Create rsync user
+  ansible.builtin.user:
+    name: "{{ rsync_user }}"
+    uid: "{{ rsync_uid }}"
+    system: true
+    create_home: false
+    shell: /sbin/nologin

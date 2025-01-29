@@ -1,0 +1,3 @@
+---
+rsync_user: rsync
+rsync_uid: 5501
