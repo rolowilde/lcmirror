@@ -2,8 +2,8 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "debian/bookworm64"
-  config.vm.box_version = "12.20250126.1"
+  config.vm.box = "almalinux/9"
+  config.vm.box_version = "9.5.20241203"
 
   config.vm.synced_folder ".", "/vagrant", disabled: true
 
