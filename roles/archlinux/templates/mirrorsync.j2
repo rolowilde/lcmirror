@@ -12,7 +12,7 @@ flock -n 9 || exit
 
 {% set delay_updates = '--delay-updates' if archlinux_delay_updates %}
 rsync_cmd() {
-	local -a cmd=(rsync -rlptH --safe-links --delete-delay {{ archlinux_delay_updates }}
+	local -a cmd=(rsync -rlptH --safe-links --delete-delay {{ delay_updates }}
 		"--timeout=600" "--contimeout=60" --no-motd)
 
 	if stty &>/dev/null; then
