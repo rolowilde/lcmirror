@@ -8,6 +8,8 @@
   ansible.builtin.file:
     path: "{{ archlinux_target }}"
     mode: '0755'
+    owner: "{{ rsync_user }}"
+    group: "{{ rsync_user }}"
     state: directory
 
 - name: Install mirrorsync script
