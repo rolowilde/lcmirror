@@ -22,5 +22,6 @@ Vagrant.configure("2") do |config|
       "vagrant:children" => ["archlinux"],
       "archlinux" => ["default"],
     }
+    ansible.extra_vars = "vagrant.yml"
   end
 end
