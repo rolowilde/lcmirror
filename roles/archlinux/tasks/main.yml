@@ -7,9 +7,9 @@
 - name: Create target directory
   ansible.builtin.file:
     path: "{{ archlinux_target }}"
-    mode: '0755'
     owner: "{{ rsync_user }}"
     group: "{{ rsync_user }}"
+    mode: '0755'
     state: directory
 
 - name: Install mirrorsync script
@@ -22,11 +22,14 @@
   ansible.builtin.command:
     cmd: "{{ archlinux_script_path }}"
     creates: "{{ archlinux_target }}/lastsync"
+  become: true
+  become_user: "{{ rsync_user }}"
   when: archlinux_initial_sync
 
 - name: Schedule cronjob
   ansible.builtin.cron:
     name: sync archlinux repo
+    user: "{{ rsync_user }}"
     job: "{{ archlinux_script_path }}"
     minute: "{{ archlinux_schedule.minute | default('*') }}"
     hour: "{{ archlinux_schedule.hour | default('*') }}"
