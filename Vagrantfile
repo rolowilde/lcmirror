@@ -18,7 +18,8 @@ Vagrant.configure("2") do |config|
     ansible.compatibility_mode = "2.0"
     ansible.playbook = "site.yml"
     ansible.groups = {
-      "mirrors:children" => ["archlinux"],
+      "mirrors:children" => ["vagrant"],
+      "vagrant:children" => ["archlinux"],
       "archlinux" => ["default"],
     }
   end
