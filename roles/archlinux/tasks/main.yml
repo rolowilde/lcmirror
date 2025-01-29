@@ -12,7 +12,7 @@
 
 - name: Install mirrorsync script
   ansible.builtin.template:
-    src: mirrorsync.sh.j2
+    src: mirrorsync.j2
     dest: "{{ archlinux_script_path }}"
     mode: '0755'
 
