@@ -1,0 +1,5 @@
+---
+debian_packages: [bash, curl, git]
+debian_repo_url: https://salsa.debian.org/mirror-team/archvsync.git
+debian_repo_path: /opt/archvsync
+debian_repo_commit: 653357779c338863917aa069afbae1b24472d32d

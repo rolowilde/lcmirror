@@ -6,7 +6,7 @@ Vagrant.configure("2") do |config|
   config.vm.box_version = "9.5.20241203"
   config.vm.synced_folder ".", "/vagrant", disabled: true
 
-  mirrors = ["archlinux"]
+  mirrors = ["archlinux", "debian"]
 
   mirrors.each do |mirror|
     config.vm.define mirror do |node|

@@ -1,0 +1,64 @@
+########################################################################
+########################################################################
+## This is a sample configuration file for the ftpsync mirror script. ##
+## Only options most users may need are included.  For documentation  ##
+## and all available options see ftpsync.conf(5).                     ##
+########################################################################
+########################################################################
+
+MIRRORNAME="{{ debian_mirrorname }}"
+TO="{{ debian_to }}"
+MAILTO="{{ debian_mailto }}"
+HUB={{ debian_hub | lower }}
+
+########################################################################
+## Connection options
+########################################################################
+
+RSYNC_HOST="{{ debian_rsync_host }}"
+RSYNC_PATH="{{ debian_rsync_path }}"
+{% if debian_rsync_user is defined and debian_rsync_user %}
+RSYNC_USER="{{ debian_rsync_user }}"
+{% endif %}
+{% if debian_rsync_password is defined and debian_rsync_password %}
+RSYNC_PASSWORD="{{ debian_rsync_password }}"
+{% endif %}
+
+########################################################################
+## Mirror information options
+########################################################################
+
+{% if debian_info_maintainer is defined and debian_info_maintainer %}
+INFO_MAINTAINER="{{ debian_info_maintainer }}"
+{% endif %}
+{% if debian_info_sponsor is defined and debian_info_sponsor %}
+INFO_SPONSOR="{{ debian_info_sponsor }}"
+{% endif %}
+{% if debian_info_country is defined and debian_info_country %}
+INFO_COUNTRY="{{ debian_info_country }}"
+{% endif %}
+{% if debian_info_location is defined and debian_info_location %}
+INFO_LOCATION="{{ debian_info_location }}"
+{% endif %}
+{% if debian_info_throughput is defined and debian_info_throughput %}
+INFO_THROUGHPUT="{{ debian_info_throughput }}"
+{% endif %}
+
+########################################################################
+## Include and exclude options
+########################################################################
+
+{% if debian_arch_include is defined and debian_arch_include %}
+ARCH_INCLUDE="{{ debian_arch_include }}"
+{% endif %}
+{% if debian_arch_exclude is defined and debian_arch_exclude %}
+ARCH_EXCLUDE="{{ debian_arch_exclude }}"
+{% endif %}
+
+########################################################################
+## Log option
+########################################################################
+
+LOGDIR="{{ debian_logdir }}"
+ERRORSONLY={{ debian_errorsonly | lower }}
+FULLLOGS={{ debian_fulllogs | lower }}

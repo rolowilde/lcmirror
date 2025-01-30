@@ -1,0 +1,13 @@
+---
+debian_initial_sync: false
+
+debian_mirrorname: "{{ ansible_hostname }}"
+debian_mailto: "$LOGNAME"
+debian_hub: false
+
+debian_rsync_path: debian
+
+debian_errorsonly: true
+debian_fulllogs: false
+
+debian_vhost: "{{ caddy_vhost }}"

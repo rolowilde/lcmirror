@@ -7,3 +7,4 @@
     - { role: cron, tags: cron }
     - { role: caddy, tags: caddy }
     - { role: archlinux, when: '"archlinux" in group_names', tags: archlinux }
+    - { role: debian, when: '"debian" in group_names', tags: debian }

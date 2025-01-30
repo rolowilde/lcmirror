@@ -1,0 +1,75 @@
+---
+- name: Install packages
+  ansible.builtin.package:
+    name: "{{ debian_packages }}"
+    state: present
+
+- name: Clone archvsync repository
+  ansible.builtin.git:
+    repo: "{{ debian_repo_url }}"
+    dest: "{{ debian_repo_path }}"
+    version: "{{ debian_repo_commit }}"
+
+- name: Create sync directory
+  ansible.builtin.file:
+    path: "{{ debian_to }}"
+    owner: "{{ rsync_user }}"
+    group: "{{ rsync_user }}"
+    mode: '0755'
+    state: directory
+
+- name: Create log directory
+  ansible.builtin.file:
+    path: "{{ debian_logdir }}"
+    owner: "{{ rsync_user }}"
+    group: "{{ rsync_user }}"
+    mode: '0755'
+    state: directory
+
+- name: Template ftpsync.conf
+  ansible.builtin.template:
+    src: ftpsync.conf.j2
+    dest: "{{ debian_repo_path }}/etc/ftpsync.conf"
+    mode: '0644'
+
+- name: Perform initial sync
+  ansible.builtin.command:
+    cmd: "{{ debian_repo_path }}/bin/ftpsync"
+    creates: "{{ debian_to }}/project"
+  become: true
+  become_user: "{{ rsync_user }}"
+  when: debian_initial_sync
+
+- name: Schedule cronjob
+  ansible.builtin.cron:
+    name: sync debian repo
+    user: "{{ rsync_user }}"
+    job: "{{ debian_repo_path }}/bin/ftpsync-cron"
+    minute: "{{ debian_schedule.minute | default('*') }}"
+    hour: "{{ debian_schedule.hour | default('*') }}"
+    day: "{{ debian_schedule.day | default('*') }}"
+    month: "{{ debian_schedule.month | default('*') }}"
+    weekday: "{{ debian_schedule.weekday | default('*') }}"
+  when:
+    - debian_schedule is defined
+    - debian_schedule is mapping
+  tags: cron
+
+- name: Expose directory to Caddy
+  ansible.builtin.blockinfile:
+    path: "{{ caddy_config_file }}"
+    content: |
+      {{ debian_vhost }} {
+      {% if caddy_global_options.log_filename is defined and caddy_global_options.log_filename %}
+          log
+      {% endif %}
+          root * {{ debian_to }}
+          file_server browse
+      }
+    prepend_newline: true
+    append_newline: true
+    marker: "# {mark} ANSIBLE MANAGED BLOCK debian"
+    validate: "{{ caddy_validation_command }}"
+    state: present
+  notify: restart caddy
+  tags: caddy
