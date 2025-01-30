@@ -10,14 +10,14 @@
 
 - name: Create log file
   ansible.builtin.file:
-    path: "/var/log/{{ caddy_global_options.log_filename }}"
+    path: "{{ caddy_global_options.log_path }}"
     state: touch
     owner: caddy
     group: caddy
     mode: '0644'
   when:
-    - caddy_global_options.log_filename is defined
-    - caddy_global_options.log_filename
+    - caddy_global_options.log_path is defined
+    - caddy_global_options.log_path
 
 - name: Overwrite Caddyfile
   ansible.builtin.copy:
@@ -37,9 +37,9 @@
       {% if caddy_global_options.admin is defined and caddy_global_options.admin %}
           admin {{ caddy_global_options.admin }}
       {% endif %}
-      {% if caddy_global_options.log_filename is defined and caddy_global_options.log_filename %}
+      {% if caddy_global_options.log_path is defined and caddy_global_options.log_path %}
           log {
-              output file /var/log/{{ caddy_global_options.log_filename }}
+              output file {{ caddy_global_options.log_path }}
           }
       {% endif %}
       }

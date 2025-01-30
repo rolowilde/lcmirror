@@ -3,7 +3,7 @@ caddy_config_override: true
 caddy_global_options:
   email: me@example.com
   admin: :2019
-  log_filename: caddy
+  log_path: /var/log/caddy
 
 archlinux_vhost: "http://{{ ansible_default_ipv4.address }}:80"
 archlinux_target: "/archlinux"
