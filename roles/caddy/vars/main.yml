@@ -7,6 +7,5 @@ caddy_redhat_copr_host: copr.fedorainfracloud.org
 caddy_redhat_copr_chroot: "epel-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}"
 caddy_redhat_copr_name: "@caddy/caddy"
 
-caddy_localhost: http://localhost:80
 caddy_config_file: /etc/caddy/Caddyfile
 caddy_validation_command: caddy validate --config %s --adapter caddyfile

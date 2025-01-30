@@ -1,11 +1,11 @@
 ---
+caddy_vhost: "http://{{ ansible_default_ipv4.address }}:80"
 caddy_config_override: true
 caddy_global_options:
   email: me@example.com
   admin: :2019
   log_path: /var/log/caddy
 
-archlinux_vhost: "http://{{ ansible_default_ipv4.address }}:80"
 archlinux_target: "/archlinux"
 archlinux_source_url: "rsync://mirrors.kernel.org/archlinux/"
 archlinux_lastupdate_url: "https://mirrors.kernel.org/archlinux/lastupdate"
