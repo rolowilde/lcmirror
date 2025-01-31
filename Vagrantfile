@@ -9,8 +9,9 @@ Vagrant.configure("2") do |config|
   mirrors = ["archlinux", "debian"]
 
   mirrors.each do |mirror|
-    config.vm.define mirror do |node|
-      node.vm.hostname = mirror
+    host = mirror + '1'
+    config.vm.define host do |node|
+      node.vm.hostname = host
 
       node.vm.provider :libvirt do |libvirt|
         libvirt.memory = 4096
@@ -23,9 +24,8 @@ Vagrant.configure("2") do |config|
         ansible.compatibility_mode = "2.0"
         ansible.playbook = "site.yml"
         ansible.groups = {
-          "mirrors:children" => ["vagrant"],
-          "vagrant:children" => [mirror],
-          mirror => [mirror],
+          "mirrors:children" => [mirror],
+          mirror => [host],
         }
         ansible.extra_vars = "vagrant.yml"
       end
