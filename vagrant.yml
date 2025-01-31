@@ -9,7 +9,6 @@ caddy_global_options:
 archlinux_target: "/archlinux"
 archlinux_source_url: "rsync://mirrors.kernel.org/archlinux/"
 archlinux_lastupdate_url: "https://mirrors.kernel.org/archlinux/lastupdate"
-archlinux_schedule: "{{ cron_dummy_schedule }}"
 
 debian_to: "/debian"
 debian_rsync_host: "archive.kernel.org"
@@ -17,4 +16,3 @@ debian_rsync_path: "debian-archive"
 debian_logdir: "/var/log/debian"
 debian_errorsonly: false
 debian_fulllogs: true
-debian_schedule: "{{ cron_dummy_schedule }}"

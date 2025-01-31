@@ -31,31 +31,19 @@
     name: sync archlinux repo
     user: "{{ rsync_user }}"
     job: "{{ archlinux_script_path }}"
-    minute: "{{ archlinux_schedule.minute | default('*') }}"
-    hour: "{{ archlinux_schedule.hour | default('*') }}"
-    day: "{{ archlinux_schedule.day | default('*') }}"
-    month: "{{ archlinux_schedule.month | default('*') }}"
-    weekday: "{{ archlinux_schedule.weekday | default('*') }}"
-  when:
-    - archlinux_schedule is defined
-    - archlinux_schedule is mapping
+    minute: "{{ archlinux_schedule.minute }}"
+    hour: "{{ archlinux_schedule.hour }}"
+    day: "{{ archlinux_schedule.day }}"
+    month: "{{ archlinux_schedule.month }}"
+    weekday: "{{ archlinux_schedule.weekday }}"
   tags: cron
 
-- name: Expose directory to Caddy
-  ansible.builtin.blockinfile:
-    path: "{{ caddy_config_file }}"
-    content: |
-      {{ archlinux_vhost }} {
-      {% if caddy_global_options.log_filename is defined and caddy_global_options.log_filename %}
-          log
-      {% endif %}
-          root * {{ archlinux_target }}
-          file_server browse
-      }
-    prepend_newline: true
-    append_newline: true
-    marker: "# {mark} ANSIBLE MANAGED BLOCK archlinux"
-    validate: "{{ caddy_validation_command }}"
-    state: present
-  notify: restart caddy
+- name: Expose mirror to Caddy
+  ansible.builtin.include_role:
+    name: caddy
+    tasks_from: fileserver
+  vars:
+    caddy_fileserver_vhost: "{{ archlinux_vhost }}"
+    caddy_fileserver_root: "{{ archlinux_target }}"
+    caddy_fileserver_marker: "archlinux"
   tags: caddy

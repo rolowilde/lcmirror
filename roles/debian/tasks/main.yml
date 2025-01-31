@@ -45,31 +45,19 @@
     name: sync debian repo
     user: "{{ rsync_user }}"
     job: "{{ debian_repo_path }}/bin/ftpsync-cron"
-    minute: "{{ debian_schedule.minute | default('*') }}"
-    hour: "{{ debian_schedule.hour | default('*') }}"
-    day: "{{ debian_schedule.day | default('*') }}"
-    month: "{{ debian_schedule.month | default('*') }}"
-    weekday: "{{ debian_schedule.weekday | default('*') }}"
-  when:
-    - debian_schedule is defined
-    - debian_schedule is mapping
+    minute: "{{ debian_schedule.minute }}"
+    hour: "{{ debian_schedule.hour }}"
+    day: "{{ debian_schedule.day }}"
+    month: "{{ debian_schedule.month }}"
+    weekday: "{{ debian_schedule.weekday }}"
   tags: cron
 
-- name: Expose directory to Caddy
-  ansible.builtin.blockinfile:
-    path: "{{ caddy_config_file }}"
-    content: |
-      {{ debian_vhost }} {
-      {% if caddy_global_options.log_filename is defined and caddy_global_options.log_filename %}
-          log
-      {% endif %}
-          root * {{ debian_to }}
-          file_server browse
-      }
-    prepend_newline: true
-    append_newline: true
-    marker: "# {mark} ANSIBLE MANAGED BLOCK debian"
-    validate: "{{ caddy_validation_command }}"
-    state: present
-  notify: restart caddy
+- name: Expose mirror to Caddy
+  ansible.builtin.include_role:
+    name: caddy
+    tasks_from: fileserver
+  vars:
+    caddy_fileserver_vhost: "{{ debian_vhost }}"
+    caddy_fileserver_root: "{{ debian_to }}"
+    caddy_fileserver_marker: "debian"
   tags: caddy

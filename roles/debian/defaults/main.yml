@@ -11,3 +11,4 @@ debian_errorsonly: true
 debian_fulllogs: false
 
 debian_vhost: "{{ caddy_vhost }}"
+debian_schedule: "{{ cron_dummy_schedule }}"

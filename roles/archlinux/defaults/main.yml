@@ -5,3 +5,4 @@ archlinux_save_lastsync: true
 archlinux_delay_updates: true
 archlinux_verbose: false
 archlinux_vhost: "{{ caddy_vhost }}"
+archlinux_schedule: "{{ cron_dummy_schedule }}"
