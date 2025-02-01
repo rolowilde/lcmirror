@@ -28,3 +28,5 @@ rsync_cmd \
 	{{ opt }} \
 {% endfor %}
 	"${source_url}" "${target}"
+
+echo $(date) > "${source_url}/project/trace/$(hostname)"
