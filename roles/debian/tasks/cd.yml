@@ -15,7 +15,7 @@
 
 - name: Set schedule fact
   ansible.builtin.set_fact:
-    debian_cd_schedule: "{{ archlinux_schedule | default(cron_dummy_schedule) }}"
+    debian_cd_schedule: "{{ debian_cd_schedule | default(cron_dummy_schedule) }}"
   tags: cron
 
 - name: Schedule cronjob
