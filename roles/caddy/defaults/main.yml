@@ -1,3 +1,3 @@
 ---
-caddy_vhost: http://localhost:80
-caddy_config_override: false
+caddy_log_file: /var/log/access.log
+caddy_host: "http://{{ ansible_default_ipv4.address }}:80"

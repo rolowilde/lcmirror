@@ -1,18 +1,14 @@
 ---
-caddy_vhost: "http://{{ ansible_default_ipv4.address }}:80"
-caddy_config_override: true
-caddy_global_options:
-  email: me@example.com
-  admin: :2019
-  log_path: /var/log/caddy
+mirror_root: /srv/mirrors
+caddy_root: "{{ mirror_root }}"
 
-archlinux_target: "/archlinux"
-archlinux_source_url: "rsync://mirrors.kernel.org/archlinux/"
-archlinux_lastupdate_url: "https://mirrors.kernel.org/archlinux/lastupdate"
+archlinux_target: "{{ mirror_root }}/archlinux"
+archlinux_source_url: rsync://mirrors.kernel.org/archlinux/
+archlinux_lastupdate_url: https://mirrors.kernel.org/archlinux/lastupdate
 
-debian_to: "/debian"
-debian_rsync_host: "archive.kernel.org"
-debian_rsync_path: "debian-archive"
-debian_logdir: "/var/log/debian"
+debian_to: "{{ mirror_root }}/debian"
+debian_rsync_host: archive.kernel.org
+debian_rsync_path: debian-archive
+debian_logdir: /var/log/debian
 debian_errorsonly: false
 debian_fulllogs: true

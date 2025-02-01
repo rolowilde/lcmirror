@@ -4,60 +4,7 @@
     name: "{{ debian_packages }}"
     state: present
 
-- name: Clone archvsync repository
-  ansible.builtin.git:
-    repo: "{{ debian_repo_url }}"
-    dest: "{{ debian_repo_path }}"
-    version: "{{ debian_repo_commit }}"
-
-- name: Create sync directory
-  ansible.builtin.file:
-    path: "{{ debian_to }}"
-    owner: "{{ rsync_user }}"
-    group: "{{ rsync_user }}"
-    mode: '0755'
-    state: directory
-
-- name: Create log directory
-  ansible.builtin.file:
-    path: "{{ debian_logdir }}"
-    owner: "{{ rsync_user }}"
-    group: "{{ rsync_user }}"
-    mode: '0755'
-    state: directory
-
-- name: Template ftpsync.conf
-  ansible.builtin.template:
-    src: ftpsync.conf.j2
-    dest: "{{ debian_repo_path }}/etc/ftpsync.conf"
-    mode: '0644'
-
-- name: Perform initial sync
-  ansible.builtin.command:
-    cmd: "{{ debian_repo_path }}/bin/ftpsync"
-    creates: "{{ debian_to }}/project"
-  become: true
-  become_user: "{{ rsync_user }}"
-  when: debian_initial_sync
-
-- name: Schedule cronjob
-  ansible.builtin.cron:
-    name: sync debian repo
-    user: "{{ rsync_user }}"
-    job: "{{ debian_repo_path }}/bin/ftpsync-cron"
-    minute: "{{ debian_schedule.minute }}"
-    hour: "{{ debian_schedule.hour }}"
-    day: "{{ debian_schedule.day }}"
-    month: "{{ debian_schedule.month }}"
-    weekday: "{{ debian_schedule.weekday }}"
-  tags: cron
-
-- name: Expose mirror to Caddy
-  ansible.builtin.include_role:
-    name: caddy
-    tasks_from: fileserver
-  vars:
-    caddy_fileserver_vhost: "{{ debian_vhost }}"
-    caddy_fileserver_root: "{{ debian_to }}"
-    caddy_fileserver_marker: "debian"
-  tags: caddy
+- name: Include archive tasks
+  ansible.builtin.include_tasks:
+    file: archive.yml
+  when: debian_archive

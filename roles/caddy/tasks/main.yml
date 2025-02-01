@@ -10,45 +10,24 @@
 
 - name: Create log file
   ansible.builtin.file:
-    path: "{{ caddy_global_options.log_path }}"
+    path: "{{ caddy_log_file }}"
     state: touch
     owner: caddy
     group: caddy
     mode: '0644'
-  when:
-    - caddy_global_options.log_path is defined
-    - caddy_global_options.log_path
 
-- name: Overwrite Caddyfile
-  ansible.builtin.copy:
-    content: ""
-    dest: "{{ caddy_config_file }}"
+- name: Create root directory
+  ansible.builtin.file:
+    path: "{{ caddy_root }}"
+    state: directory
+    owner: caddy
+    group: caddy
+    mode: '0755'
+
+- name: Template Caddyfile
+  ansible.builtin.template:
+    src: Caddyfile.j2
+    dest: /etc/caddy/Caddyfile
+    validate: caddy validate --config %s --adapter caddyfile
     mode: '0644'
-  when: caddy_config_override
-
-- name: Append global options to Caddyfile
-  ansible.builtin.blockinfile:
-    path: "{{ caddy_config_file }}"
-    content: |
-      {
-      {% if caddy_global_options.email is defined and caddy_global_options.email %}
-          email {{ caddy_global_options.email }}
-      {% endif %}
-      {% if caddy_global_options.admin is defined and caddy_global_options.admin %}
-          admin {{ caddy_global_options.admin }}
-      {% endif %}
-      {% if caddy_global_options.log_path is defined and caddy_global_options.log_path %}
-          log {
-              output file {{ caddy_global_options.log_path }}
-          }
-      {% endif %}
-      }
-    insertbefore: BOF
-    append_newline: true
-    marker: "# {mark} ANSIBLE MANAGED BLOCK global"
-    validate: "{{ caddy_validation_command }}"
-    state: present
-  when:
-    - caddy_global_options is defined
-    - caddy_global_options is mapping
   notify: restart caddy

@@ -1,0 +1,45 @@
+---
+- name: Clone archvsync repository
+  ansible.builtin.git:
+    repo: "{{ debian_repo_git }}"
+    version: "{{ debian_repo_version }}"
+    dest: "{{ debian_repo_path }}"
+
+- name: Create target directory
+  ansible.builtin.file:
+    path: "{{ debian_to }}"
+    owner: "{{ rsync_user }}"
+    group: "{{ rsync_user }}"
+    mode: '0755'
+    state: directory
+
+- name: Create log directory
+  ansible.builtin.file:
+    path: "{{ debian_logdir }}"
+    owner: "{{ rsync_user }}"
+    group: "{{ rsync_user }}"
+    mode: '0755'
+    state: directory
+
+- name: Template ftpsync.conf
+  ansible.builtin.template:
+    src: ftpsync.conf.j2
+    dest: "{{ debian_repo_path }}/etc/ftpsync.conf"
+    mode: '0644'
+
+- name: Set schedule fact
+  ansible.builtin.set_fact:
+    debian_schedule: "{{ debian_schedule | default(cron_dummy_schedule) }}"
+  tags: cron
+
+- name: Schedule cronjob
+  ansible.builtin.cron:
+    name: sync debian repo
+    user: "{{ rsync_user }}"
+    job: "{{ debian_repo_path }}/bin/ftpsync-cron"
+    minute: "{{ debian_schedule.minute }}"
+    hour: "{{ debian_schedule.hour }}"
+    day: "{{ debian_schedule.day }}"
+    month: "{{ debian_schedule.month }}"
+    weekday: "{{ debian_schedule.weekday }}"
+  tags: cron

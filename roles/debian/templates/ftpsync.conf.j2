@@ -1,64 +1,132 @@
-########################################################################
-########################################################################
-## This is a sample configuration file for the ftpsync mirror script. ##
-## Only options most users may need are included.  For documentation  ##
-## and all available options see ftpsync.conf(5).                     ##
-########################################################################
-########################################################################
-
-MIRRORNAME="{{ debian_mirrorname }}"
-TO="{{ debian_to }}"
-MAILTO="{{ debian_mailto }}"
+{% if debian_mirrorname is defined %}
+MIRRORNAME={{ debian_mirrorname }}
+{% endif %}
+{% if debian_to is defined %}
+TO={{ debian_to }}
+{% endif %}
+{% if debian_mailto is defined %}
+MAILTO={{ debian_mailto }}
+{% endif %}
+{% if debian_hub is defined %}
 HUB={{ debian_hub | lower }}
-
-########################################################################
-## Connection options
-########################################################################
-
-RSYNC_HOST="{{ debian_rsync_host }}"
-RSYNC_PATH="{{ debian_rsync_path }}"
-{% if debian_rsync_user is defined and debian_rsync_user %}
-RSYNC_USER="{{ debian_rsync_user }}"
 {% endif %}
-{% if debian_rsync_password is defined and debian_rsync_password %}
-RSYNC_PASSWORD="{{ debian_rsync_password }}"
+{% if debian_rsync_host is defined %}
+RSYNC_HOST={{ debian_rsync_host }}
 {% endif %}
-
-########################################################################
-## Mirror information options
-########################################################################
-
-{% if debian_info_maintainer is defined and debian_info_maintainer %}
-INFO_MAINTAINER="{{ debian_info_maintainer }}"
+{% if debian_rsync_path is defined %}
+RSYNC_PATH={{ debian_rsync_path }}
 {% endif %}
-{% if debian_info_sponsor is defined and debian_info_sponsor %}
-INFO_SPONSOR="{{ debian_info_sponsor }}"
+{% if debian_rsync_user is defined %}
+RSYNC_USER={{ debian_rsync_user }}
 {% endif %}
-{% if debian_info_country is defined and debian_info_country %}
-INFO_COUNTRY="{{ debian_info_country }}"
+{% if debian_rsync_password is defined %}
+RSYNC_PASSWORD={{ debian_rsync_password }}
 {% endif %}
-{% if debian_info_location is defined and debian_info_location %}
-INFO_LOCATION="{{ debian_info_location }}"
+{% if debian_rsync_transport is defined %}
+RSYNC_TRANSPORT={{ debian_rsync_transport }}
 {% endif %}
-{% if debian_info_throughput is defined and debian_info_throughput %}
-INFO_THROUGHPUT="{{ debian_info_throughput }}"
+{% if debian_rsync_ssl_port is defined %}
+RSYNC_SSL_PORT={{ debian_rsync_ssl_port }}
 {% endif %}
-
-########################################################################
-## Include and exclude options
-########################################################################
-
-{% if debian_arch_include is defined and debian_arch_include %}
-ARCH_INCLUDE="{{ debian_arch_include }}"
+{% if debian_rsync_ssl_capath is defined %}
+RSYNC_SSL_CAPATH={{ debian_rsync_ssl_capath }}
 {% endif %}
-{% if debian_arch_exclude is defined and debian_arch_exclude %}
-ARCH_EXCLUDE="{{ debian_arch_exclude }}"
+{% if debian_rsync_ssl_method is defined %}
+RSYNC_SSL_METHOD={{ debian_rsync_ssl_method }}
 {% endif %}
-
-########################################################################
-## Log option
-########################################################################
-
-LOGDIR="{{ debian_logdir }}"
+{% if debian_rsync_proxy is defined %}
+RSYNC_PROXY={{ debian_rsync_proxy }}
+{% endif %}
+{% if debian_info_maintainer is defined %}
+INFO_MAINTAINER={{ debian_info_maintainer }}
+{% endif %}
+{% if debian_info_sponsor is defined %}
+INFO_SPONSOR={{ debian_info_sponsor }}
+{% endif %}
+{% if debian_info_country is defined %}
+INFO_COUNTRY={{ debian_info_country }}
+{% endif %}
+{% if debian_info_location is defined %}
+INFO_LOCATION={{ debian_info_location }}
+{% endif %}
+{% if debian_info_throughput is defined %}
+INFO_THROUGHPUT={{ debian_info_throughput }}
+{% endif %}
+{% if debian_arch_include is defined %}
+ARCH_INCLUDE={{ debian_arch_include }}
+{% endif %}
+{% if debian_arch_exclude is defined %}
+ARCH_EXCLUDE={{ debian_arch_exclude }}
+{% endif %}
+{% if debian_exclude is defined %}
+EXCLUDE={{ debian_exclude }}
+{% endif %}
+{% if debian_logdir is defined %}
+LOGDIR={{ debian_logdir }}
+{% endif %}
+{% if debian_log is defined %}
+LOG={{ debian_log }}
+{% endif %}
+{% if debian_errorsonly is defined %}
 ERRORSONLY={{ debian_errorsonly | lower }}
+{% endif %}
+{% if debian_fulllogs is defined %}
 FULLLOGS={{ debian_fulllogs | lower }}
+{% endif %}
+{% if debian_logrotate is defined %}
+LOGROTATE={{ debian_logrotate }}
+{% endif %}
+{% if debian_locktimeout is defined %}
+LOCKTIMEOUT={{ debian_locktimeout }}
+{% endif %}
+{% if debian_uipsleep is defined %}
+UIPSLEEP={{ debian_uipsleep }}
+{% endif %}
+{% if debian_uipretries is defined %}
+UIPRETRIES={{ debian_uipretries }}
+{% endif %}
+{% if debian_tracehost is defined %}
+TRACEHOST={{ debian_tracehost }}
+{% endif %}
+{% if debian_rsync is defined %}
+RSYNC={{ debian_rsync }}
+{% endif %}
+{% if debian_rsync_extra is defined %}
+RSYNC_EXTRA={{ debian_rsync_extra }}
+{% endif %}
+{% if debian_rsync_bw is defined %}
+RSYNC_BW={{ debian_rsync_bw }}
+{% endif %}
+{% if debian_rsync_options is defined %}
+RSYNC_OPTIONS={{ debian_rsync_options }}
+{% endif %}
+{% if debian_rsync_options1 is defined %}
+RSYNC_OPTIONS1={{ debian_rsync_options1 }}
+{% endif %}
+{% if debian_rsync_options2 is defined %}
+RSYNC_OPTIONS2={{ debian_rsync_options2 }}
+{% endif %}
+{% if debian_callbackuser is defined %}
+CALLBACKUSER={{ debian_callbackuser }}
+{% endif %}
+{% if debian_callbackhost is defined %}
+CALLBACKHOST={{ debian_callbackhost }}
+{% endif %}
+{% if debian_callbackkey is defined %}
+CALLBACKKEY={{ debian_callbackkey }}
+{% endif %}
+{% if debian_hook1 is defined %}
+HOOK1={{ debian_hook1 }}
+{% endif %}
+{% if debian_hook2 is defined %}
+HOOK2={{ debian_hook2 }}
+{% endif %}
+{% if debian_hook3 is defined %}
+HOOK3={{ debian_hook3 }}
+{% endif %}
+{% if debian_hook4 is defined %}
+HOOK4={{ debian_hook4 }}
+{% endif %}
+{% if debian_hook5 is defined %}
+HOOK5={{ debian_hook5 }}
+{% endif %}
