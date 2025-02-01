@@ -1,17 +1,13 @@
 ---
-mirror_root: /srv/mirrors
-caddy_root: "{{ mirror_root }}"
+rsync_root: /srv/mirrors
 
-archlinux_target: "{{ mirror_root }}/archlinux"
 archlinux_source_url: rsync://mirrors.kernel.org/archlinux/
 archlinux_lastupdate_url: https://mirrors.kernel.org/archlinux/lastupdate
 
-debian_to: "{{ mirror_root }}/debian"
 debian_rsync_host: archive.kernel.org
 debian_rsync_path: debian-archive
 debian_logdir: /var/log/debian
 debian_errorsonly: false
 debian_fulllogs: true
 
-debian_cd_target: "{{ mirror_root }}/debian-cd"
 debian_cd_source_url: rsync://cdimage.debian.org/debian-cd/

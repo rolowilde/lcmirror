@@ -16,14 +16,6 @@
     group: caddy
     mode: '0644'
 
-- name: Create root directory
-  ansible.builtin.file:
-    path: "{{ caddy_root }}"
-    state: directory
-    owner: caddy
-    group: caddy
-    mode: '0755'
-
 - name: Template Caddyfile
   ansible.builtin.template:
     src: Caddyfile.j2

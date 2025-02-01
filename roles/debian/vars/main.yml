@@ -3,4 +3,6 @@ debian_packages: [bash, curl, git]
 debian_repo_git: https://salsa.debian.org/mirror-team/archvsync.git
 debian_repo_version: 653357779c338863917aa069afbae1b24472d32d
 debian_repo_path: /opt/archvsync
+debian_to: "{{ rsync_root }}/debian"
 debian_cd_script: /usr/bin/mirrorsync-debian-cd
+debian_cd_target: "{{ rsync_root }}/debian-cd"

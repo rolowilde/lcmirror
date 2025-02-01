@@ -11,3 +11,11 @@
     system: true
     create_home: false
     shell: /sbin/nologin
+
+- name: Create root directory
+  ansible.builtin.file:
+    path: "{{ rsync_root }}"
+    owner: "{{ rsync_user }}"
+    group: "{{ rsync_user }}"
+    mode: '0755'
+    state: directory

@@ -1,3 +1,4 @@
 ---
 rsync_user: rsync
 rsync_uid: 5501
+rsync_root: /srv/mirrors

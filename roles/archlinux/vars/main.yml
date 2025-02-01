@@ -1,3 +1,4 @@
 ---
 archlinux_packages: [bash, curl]
 archlinux_script: /usr/bin/mirrorsync-archlinux
+archlinux_target: "{{ rsync_root }}/archlinux"
