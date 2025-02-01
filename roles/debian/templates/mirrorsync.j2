@@ -1,0 +1,30 @@
+#!/bin/bash
+
+target="{{ debian_cd_target }}"
+lock="{{ debian_cd_lock }}"
+source_url="{{ debian_cd_source_url }}"
+
+[ ! -d "${target}" ] && mkdir -p "${target}"
+
+exec 9>"${lock}"
+flock -n 9 || exit
+
+{% set delay_updates = '--delay-updates' if debian_cd_delay_updates %}
+rsync_cmd() {
+	local -a cmd=(rsync -rlptH --safe-links --delete-delay {{ delay_updates }}
+		"--timeout=600" "--contimeout=60" "--block-size=8192" --partial --no-motd)
+
+	if stty &>/dev/null; then
+		cmd+=(-h -v --progress)
+	else
+		cmd+=("--info=name1")
+	fi
+
+	"${cmd[@]}" "$@"
+}
+
+rsync_cmd \
+{% for opt in debian_cd_rsync_options | default() %}
+	{{ opt }} \
+{% endfor %}
+	"${source_url}" "${target}"

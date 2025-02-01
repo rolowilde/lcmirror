@@ -12,3 +12,6 @@ debian_rsync_path: debian-archive
 debian_logdir: /var/log/debian
 debian_errorsonly: false
 debian_fulllogs: true
+
+debian_cd_target: "{{ mirror_root }}/debian-cd"
+debian_cd_source_url: rsync://cdimage.debian.org/debian-cd/

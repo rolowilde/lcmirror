@@ -1,2 +1,5 @@
 ---
 debian_archive: true
+debian_cd: true
+debian_cd_lock: /tmp/mirrorsync-debian-cd.lck
+debian_cd_delay_updates: true

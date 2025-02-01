@@ -8,3 +8,8 @@
   ansible.builtin.include_tasks:
     file: archive.yml
   when: debian_archive
+
+- name: Include cd tasks
+  ansible.builtin.include_tasks:
+    file: cd.yml
+  when: debian_cd
