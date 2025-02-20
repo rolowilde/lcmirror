@@ -9,7 +9,7 @@
     name: "{{ rsync_user }}"
     uid: "{{ rsync_uid }}"
     system: true
-    create_home: false
+    home: /var/lib/rsync
     shell: /sbin/nologin
 
 - name: Create root directory
