@@ -1,0 +1,11 @@
+---
+ubuntu_packages: [bash, git]
+ubuntu_repo_git: https://github.com/rolowilde/ubumirror.git
+ubuntu_repo_version: b1d7f02b6e5e770bbe09765e6e654e3cfd76169d
+ubuntu_repo_path: /opt/ubumirror
+ubuntu_archive_dir: "{{ rsync_root }}/ubuntu"
+ubuntu_cdimage_dir: "{{ rsync_root }}/ubuntu-cdimage"
+ubuntu_release_dir: "{{ rsync_root }}/ubuntu-release"
+ubuntu_ports_dir: "{{ rsync_root }}/ubuntu-ports"
+ubuntu_cloudimage_dir: "{{ rsync_root }}/ubuntu-cloud-images"
+ubuntu_mirrors: [archive, cdimage, release, ports, cloudimage]

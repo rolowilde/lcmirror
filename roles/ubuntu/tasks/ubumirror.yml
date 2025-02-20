@@ -1,0 +1,29 @@
+---
+- name: Output mirror
+  ansible.builtin.debug:
+    var: ubumirror
+
+- name: Create dir
+  ansible.builtin.file:
+    path: "{{ lookup('ansible.builtin.vars', 'ubuntu_' + ubumirror + '_dir') }}"
+    owner: "{{ rsync_user }}"
+    group: "{{ rsync_user }}"
+    mode: '0755'
+    state: directory
+
+- name: Set schedule fact
+  ansible.builtin.set_fact:
+    "ubuntu_{{ ubumirror }}_schedule": "{{ lookup('ansible.builtin.vars', 'ubuntu_' + ubumirror + '_schedule') }}"
+  tags: cron
+
+- name: Schedule cronjob
+  ansible.builtin.cron:
+    name: "sync ubuntu {{ ubumirror }} repo"
+    user: "{{ rsync_user }}"
+    job: "{{ ubuntu_repo_path }}/ubu{{ ubumirror }}"
+    minute: "{{ lookup('ansible.builtin.vars', 'ubuntu_' + ubumirror + '_schedule').minute }}"
+    hour: "{{ lookup('ansible.builtin.vars', 'ubuntu_' + ubumirror + '_schedule').hour }}"
+    day: "{{ lookup('ansible.builtin.vars', 'ubuntu_' + ubumirror + '_schedule').day }}"
+    month: "{{ lookup('ansible.builtin.vars', 'ubuntu_' + ubumirror + '_schedule').month }}"
+    weekday: "{{ lookup('ansible.builtin.vars', 'ubuntu_' + ubumirror + '_schedule').weekday }}"
+  tags: cron
