@@ -10,17 +10,11 @@
     url: "{{ caddy_debian_key_url }}"
     state: present
 
-- name: Fetch caddy-stable.list
+- name: Add Caddy repository
   ansible.builtin.uri:
     url: "{{ caddy_debian_sources_url }}"
-    return_content: true
-  register: caddy_debian_sources_uri
-
-- name: Add Caddy repository
-  ansible.builtin.apt_repository:
-    repo: "{{ caddy_debian_sources_uri.content }}"
-    state: present
-    filename: caddy-stable.list
+    dest: /etc/apt/sources.list.d
+    mode: '0644'
 
 - name: Update apt cache
   ansible.builtin.apt:
