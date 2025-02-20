@@ -13,11 +13,6 @@
     dest: "{{ debian_cd_script }}"
     mode: '0755'
 
-- name: Set schedule fact
-  ansible.builtin.set_fact:
-    debian_cd_schedule: "{{ debian_cd_schedule | default(cron_dummy_schedule) }}"
-  tags: cron
-
 - name: Schedule cronjob
   ansible.builtin.cron:
     name: sync debian cd repo

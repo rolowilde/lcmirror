@@ -1,5 +1,13 @@
 ---
 debian_archive: true
+debian_fulllogs: true
+debian_rsync_host: ftp-master.debian.org
+debian_rsync_path: debian
+debian_logdir: /var/log/debian
+debian_schedule: "{{ cron_dummy_schedule | default(None) }}"
+
 debian_cd: true
 debian_cd_lock: /tmp/mirrorsync-debian-cd.lck
 debian_cd_delay_updates: true
+debian_cd_source_url: rsync://cdimage.debian.org/debian-cd/
+debian_cd_schedule: "{{ cron_dummy_schedule | default(None) }}"

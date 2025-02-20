@@ -3,20 +3,20 @@ ubuntu_logdir: /var/log/ubumirror
 
 ubuntu_archive: true
 ubuntu_archive_mirror: rsync://rsync.archive.ubuntu.com/ubuntu
-ubuntu_archive_schedule: "{{ cron_dummy_schedule }}"
+ubuntu_archive_schedule: "{{ cron_dummy_schedule | default(None) }}"
 
 ubuntu_cdimage: true
 ubuntu_cdimage_mirror: rsync://rsync.cdimage.ubuntu.com/cdimage
-ubuntu_cdimage_schedule: "{{ cron_dummy_schedule }}"
+ubuntu_cdimage_schedule: "{{ cron_dummy_schedule | default(None) }}"
 
 ubuntu_release: true
 ubuntu_release_mirror: rsync://rsync.releases.ubuntu.com/releases
-ubuntu_release_schedule: "{{ cron_dummy_schedule }}"
+ubuntu_release_schedule: "{{ cron_dummy_schedule | default(None) }}"
 
 ubuntu_ports: true
 ubuntu_ports_mirror: rsync://rsync.ports.ubuntu.com/ubuntu-ports
-ubuntu_ports_schedule: "{{ cron_dummy_schedule }}"
+ubuntu_ports_schedule: "{{ cron_dummy_schedule | default(None) }}"
 
 ubuntu_cloudimage: true
 ubuntu_cloudimage_mirror: rsync://cloud-images.ubuntu.com/cloud-images
-ubuntu_cloudimage_schedule: "{{ cron_dummy_schedule }}"
+ubuntu_cloudimage_schedule: "{{ cron_dummy_schedule | default(None) }}"

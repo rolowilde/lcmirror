@@ -1,5 +1,8 @@
 ---
+archlinux_source_url: rsync://rsync.archlinux.org/ftp_tier1
+archlinux_lastupdate_url: https://rsync.archlinux.org/lastupdate
 archlinux_lock: /tmp/mirrorsync-archlinux.lck
 archlinux_save_lastsync: true
 archlinux_delay_updates: true
 archlinux_verbose: false
+archlinux_schedule: "{{ cron_dummy_schedule | default(None) }}"

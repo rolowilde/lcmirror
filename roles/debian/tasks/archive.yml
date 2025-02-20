@@ -27,11 +27,6 @@
     dest: "{{ debian_repo_path }}/etc/ftpsync.conf"
     mode: '0644'
 
-- name: Set schedule fact
-  ansible.builtin.set_fact:
-    debian_schedule: "{{ debian_schedule | default(cron_dummy_schedule) }}"
-  tags: cron
-
 - name: Schedule cronjob
   ansible.builtin.cron:
     name: sync debian repo
