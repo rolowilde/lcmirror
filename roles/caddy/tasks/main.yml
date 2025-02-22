@@ -8,6 +8,11 @@
     enabled: true
     state: started
 
+- name: Stat log file
+  ansible.builtin.stat:
+    path: "{{ caddy_log_file }}"
+  register: caddy_access_log
+
 - name: Create log file
   ansible.builtin.file:
     path: "{{ caddy_log_file }}"
@@ -15,6 +20,7 @@
     owner: caddy
     group: caddy
     mode: '0644'
+  when: not caddy_access_log.stat.exists
 
 - name: Stat Caddyfile
   ansible.builtin.stat:
