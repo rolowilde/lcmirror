@@ -8,6 +8,7 @@
 - name: Add Caddy GPG key
   ansible.builtin.apt_key:
     url: "{{ caddy_debian_key_url }}"
+    keyring: /usr/share/keyrings/caddy-stable-archive-keyring.gpg
     state: present
 
 - name: Add Caddy repository
