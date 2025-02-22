@@ -4,13 +4,22 @@
     name: rsync
     state: present
 
+- name: Create rsync group
+  ansible.builtin.group:
+    name: rsync
+    gid: "{{ rsync_uid }}"
+    system: true
+    state: present
+
 - name: Create rsync user
   ansible.builtin.user:
     name: "{{ rsync_user }}"
     uid: "{{ rsync_uid }}"
-    system: true
+    group: rsync
     home: /var/lib/rsync
     shell: /sbin/nologin
+    system: true
+    state: present
 
 - name: Create root directory
   ansible.builtin.file:
