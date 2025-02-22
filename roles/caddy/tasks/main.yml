@@ -16,6 +16,11 @@
     group: caddy
     mode: '0644'
 
+- name: Stat Caddyfile
+  ansible.builtin.stat:
+    path: /etc/caddy/Caddyfile
+  register: caddy_config_file
+
 - name: Template Caddyfile
   ansible.builtin.template:
     src: Caddyfile.j2
@@ -23,3 +28,4 @@
     validate: caddy validate --config %s --adapter caddyfile
     mode: '0644'
   notify: restart caddy
+  when: not caddy_config_file.stat.exists
