@@ -1,6 +1,5 @@
 ---
 debian_archive: true
-debian_fulllogs: true
 debian_rsync_host: ftp-master.debian.org
 debian_rsync_path: debian
 debian_logdir: /var/log/debian
