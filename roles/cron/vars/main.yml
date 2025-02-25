@@ -11,6 +11,6 @@ cron_service: "{{ lookup('ansible.builtin.vars', 'cron_service_' + ansible_os_fa
 cron_dummy_schedule:
   minute: 0
   hour: 0
-  day: 29
+  day: 31
   month: 2
   weekday: 1
