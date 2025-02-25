@@ -1,5 +1,8 @@
 ---
 ubuntu_logdir: /var/log/ubumirror
+ubuntu_hostname: "{{ ansible_fqdn }}"
+ubuntu_speed: 0
+ubuntu_ipv6: 0
 
 ubuntu_archive: true
 ubuntu_archive_mirror: rsync://rsync.archive.ubuntu.com/ubuntu
