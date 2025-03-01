@@ -1,21 +1,21 @@
 #!/bin/bash
-TARGET="{{ mirror.target }}"
-LOCK="{{ mirror.lock }}"
-SOURCE_URL="{{ mirror.source_url }}"
-LASTUPDATE_URL="{{ mirror.lastupdate_url }}"
-LASTUPDATE_FILE="{{ mirror.lastupdate_file }}"
-LOGDIR="{{ mirror.logdir }}"
+TARGET="{{ mirrorsync_definition.target }}"
+LOCK="{{ mirrorsync_definition.lock }}"
+SOURCE_URL="{{ mirrorsync_definition.source_url }}"
+LASTUPDATE_URL="{{ mirrorsync_definition.lastupdate_url }}"
+LASTUPDATE_FILE="{{ mirrorsync_definition.lastupdate_file }}"
+LOGDIR="{{ mirrorsync_definition.logdir }}"
 LOGFILE="$LOGDIR/mirrorsync.log"
-LOGCYCLE={{ mirror.logcycle }}
+LOGCYCLE={{ mirrorsync_definition.logcycle }}
 RSYNC_OPTIONS=(
 	-rlptH
 	--safe-links
 	--delete-delay
 	--delay-updates
-	--timeout={{ mirror.timeout }}
-	--contimeout={{ mirror.contimeout }}
+	--timeout={{ mirrorsync_definition.timeout }}
+	--contimeout={{ mirrorsync_definition.contimeout }}
 	--no-motd
-{% for opt in mirror.rsync_options %}
+{% for opt in mirrorsync_definition.rsync_options %}
 	{{ opt }}
 {% endfor %}
 )
@@ -49,14 +49,14 @@ if [[ -f "$LASTUPDATE_FILE" ]]; then
 	fi
 fi
 
-{% if mirror.prescript %}
-{{ mirror.prescript }}
+{% if mirrorsync_definition.prescript %}
+{{ mirrorsync_definition.prescript }}
 
 {% endif %}
 rsync_cmd "$SOURCE_URL" "$TARGET" -v
-{% if mirror.postscript %}
+{% if mirrorsync_definition.postscript %}
 
-{{ mirror.postscript }}
+{{ mirrorsync_definition.postscript }}
 {% endif %}
 
 log "done"
