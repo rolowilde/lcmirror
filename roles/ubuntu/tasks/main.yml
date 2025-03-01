@@ -32,4 +32,4 @@
     loop_var: ubuntu_mirror
   vars:
     ubumirror: "{{ ubuntu_mirror }}"
-  when: lookup("ansible.builtin.vars", "ubuntu_" + mirror)
+  when: lookup("ansible.builtin.vars", "ubuntu_" + ubuntu_mirror)
