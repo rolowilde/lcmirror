@@ -1,5 +1,6 @@
 ---
 debian_archive: true
+debian_archive_to: "{{ rsync_root }}/debian"
 debian_archive_mirrorname: "{{ ansible_fqdn }}"
 debian_archive_rsync_host: ftp-master.debian.org
 debian_archive_rsync_path: debian
