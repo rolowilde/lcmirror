@@ -12,6 +12,14 @@
     mode: '0755'
     state: directory
 
+- name: Create log directory
+  ansible.builtin.file:
+    path: "{{ archlinux_logdir }}"
+    owner: "{{ rsync_user }}"
+    group: "{{ rsync_user }}"
+    mode: '0755'
+    state: directory
+
 - name: Template mirrorsync script
   ansible.builtin.template:
     src: mirrorsync.j2
