@@ -1,3 +1,4 @@
 ---
 caddy_log_file: /var/log/access.log
 caddy_host: "http://{{ ansible_default_ipv4.address }}:80"
+caddy_config_src: Caddyfile.j2
