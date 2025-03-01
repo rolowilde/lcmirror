@@ -8,6 +8,7 @@ debian_archive_logdir: /var/log/debian
 debian_archive_schedule: "{{ cron_dummy_schedule | default(None) }}"
 
 debian_cd: true
+debian_cd_logdir: /var/log/debian
 debian_cd_source_url: rsync://cdimage.debian.org/debian-cd/
 debian_cd_lastupdate_url: https://cdimage.debian.org/debian-cd/project/trace/cdimage.debian.org
 debian_cd_lastupdate_file: "$TARGET/project/trace/{{ ansible_fqdn }}"

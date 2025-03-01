@@ -1,5 +1,5 @@
 ---
-ubuntu_logdir: /var/log/ubumirror
+ubuntu_logdir: /var/log/ubuntu
 ubuntu_hostname: "{{ ansible_fqdn }}"
 ubuntu_speed: 0
 ubuntu_ipv6: 0
