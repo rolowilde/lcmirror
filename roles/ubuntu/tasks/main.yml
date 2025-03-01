@@ -29,7 +29,7 @@
     file: ubumirror.yml
   loop: "{{ ubuntu_mirrors }}"
   loop_control:
-    loop_var: mirror
+    loop_var: ubuntu_mirror
   vars:
-    ubumirror: "{{ mirror }}"
+    ubumirror: "{{ ubuntu_mirror }}"
   when: lookup("ansible.builtin.vars", "ubuntu_" + mirror)
