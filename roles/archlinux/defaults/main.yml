@@ -1,10 +1,4 @@
 ---
 archlinux_source_url: rsync://rsync.archlinux.org/ftp_tier1
 archlinux_lastupdate_url: https://rsync.archlinux.org/lastupdate
-archlinux_lock: /tmp/mirrorsync-archlinux.lck
-archlinux_logdir: /var/log/archlinux
-archlinux_logcycle: 7
-archlinux_timeout: 600
-archlinux_contimeout: 60
-archlinux_rsync_options: []
-archlinux_schedule: "{{ cron_dummy_schedule | default(None) }}"
+archlinux_lastupdate_file: $TARGET/lastupdate

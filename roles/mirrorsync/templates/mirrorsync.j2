@@ -1,20 +1,21 @@
 #!/bin/bash
-TARGET="{{ archlinux_target }}"
-LOCK="{{ archlinux_lock }}"
-SOURCE_URL="{{ archlinux_source_url }}"
-LASTUPDATE_URL="{{ archlinux_lastupdate_url }}"
-LOGDIR="{{ archlinux_logdir }}"
+TARGET="{{ mirror.target }}"
+LOCK="{{ mirror.lock }}"
+SOURCE_URL="{{ mirror.source_url }}"
+LASTUPDATE_URL="{{ mirror.lastupdate_url }}"
+LASTUPDATE_FILE="{{ mirror.lastupdate_file }}"
+LOGDIR="{{ mirror.logdir }}"
 LOGFILE="$LOGDIR/mirrorsync.log"
-LOGCYCLE={{ archlinux_logcycle }}
+LOGCYCLE={{ mirror.logcycle }}
 RSYNC_OPTIONS=(
 	-rlptH
 	--safe-links
 	--delete-delay
 	--delay-updates
-	--timeout={{ archlinux_timeout }}
-	--contimeout={{ archlinux_contimeout }}
+	--timeout={{ mirror.timeout }}
+	--contimeout={{ mirror.contimeout }}
 	--no-motd
-{% for opt in archlinux_rsync_options %}
+{% for opt in mirror.rsync_options %}
 	{{ opt }}
 {% endfor %}
 )
@@ -36,18 +37,26 @@ trap 'rm -f "$LOCK" &>/dev/null && savelog -c $LOGCYCLE -n "$LOGFILE" &>/dev/nul
 
 exec 9>"${LOCK}"
 if ! flock -n 9; then
+	trap - EXIT
 	log "exit due to running sync"
 	exit 1
 fi
 
-if [[ -f "$TARGET/lastupdate" ]]; then
-	if diff -b <(curl -Ls "$LASTUPDATE_URL") "$TARGET/lastupdate" >/dev/null; then
-		rsync_cmd "$SOURCE_URL/lastsync" "$TARGET/lastsync"
+if [[ -f "$LASTUPDATE_FILE" ]]; then
+	if diff -b <(curl -Ls "$LASTUPDATE_URL") "$LASTUPDATE_FILE" >/dev/null; then
 		log "exit due to no updates"
 		exit 0
 	fi
 fi
 
+{% if mirror.prescript %}
+{{ mirror.prescript }}
+
+{% endif %}
 rsync_cmd "$SOURCE_URL" "$TARGET" -v
+{% if mirror.postscript %}
+
+{{ mirror.postscript }}
+{% endif %}
 
 log "done"

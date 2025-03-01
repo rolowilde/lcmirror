@@ -1,0 +1,67 @@
+---
+- name: Set facts
+  ansible.builtin.set_fact:
+    cron_dummy_schedule: "{{ cron_dummy_schedule | default({}) }}"
+    mirrorsync_sanitized_name: "{{ mirrorsync_name | replace('_', '-') }}"
+
+- name: Set mirror fact
+  ansible.builtin.set_fact:
+    mirror:
+      packages: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_packages', default=['bash', 'curl']) }}"
+      script: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_script', default='/usr/bin/mirrorsync-' + mirrorsync_sanitized_name) }}"
+      target: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_target', default=rsync_root + '/' + mirrorsync_sanitized_name) }}"
+      lock: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_lock', default='/tmp/mirrorsync-' + mirrorsync_sanitized_name + '.lck') }}"
+      source_url: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_source_url') }}"
+      lastupdate_url: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_lastupdate_url', default='') }}"
+      lastupdate_file: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_lastupdate_file', default='') }}"
+      logdir: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_logdir', default='/var/log/' + mirrorsync_sanitized_name) }}"
+      logcycle: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_logcycle', default=7) }}"
+      timeout: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_timeout', default=600) }}"
+      contimeout: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_contimeout', default=60) }}"
+      rsync_options: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_rsync_options', default=[]) }}"
+      prescript: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_prescript', default='') }}"
+      postscript: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_postscript', default='') }}"
+      schedule: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_schedule', default=cron_dummy_schedule) }}"
+
+- name: Output mirror
+  ansible.builtin.debug:
+    var: mirror
+
+- name: Install packages
+  ansible.builtin.package:
+    name: "{{ mirror.packages }}"
+    state: present
+
+- name: Create target directory
+  ansible.builtin.file:
+    path: "{{ mirror.target }}"
+    owner: "{{ rsync_user }}"
+    group: "{{ rsync_user }}"
+    mode: '0755'
+    state: directory
+
+- name: Create log directory
+  ansible.builtin.file:
+    path: "{{ mirror.logdir }}"
+    owner: "{{ rsync_user }}"
+    group: "{{ rsync_user }}"
+    mode: '0755'
+    state: directory
+
+- name: Template mirrorsync script
+  ansible.builtin.template:
+    src: mirrorsync.j2
+    dest: "{{ mirror.script }}"
+    mode: '0755'
+
+- name: Schedule cronjob
+  ansible.builtin.cron:
+    name: "sync {{ mirrorsync_name }} repo"
+    user: "{{ rsync_user }}"
+    job: "{{ mirror.script }}"
+    minute: "{{ mirror.schedule.minute }}"
+    hour: "{{ mirror.schedule.hour }}"
+    day: "{{ mirror.schedule.day }}"
+    month: "{{ mirror.schedule.month }}"
+    weekday: "{{ mirror.schedule.weekday }}"
+  tags: cron

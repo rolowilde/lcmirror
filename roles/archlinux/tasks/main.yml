@@ -1,39 +1,6 @@
 ---
-- name: Install packages
-  ansible.builtin.package:
-    name: "{{ archlinux_packages }}"
-    state: present
-
-- name: Create target directory
-  ansible.builtin.file:
-    path: "{{ archlinux_target }}"
-    owner: "{{ rsync_user }}"
-    group: "{{ rsync_user }}"
-    mode: '0755'
-    state: directory
-
-- name: Create log directory
-  ansible.builtin.file:
-    path: "{{ archlinux_logdir }}"
-    owner: "{{ rsync_user }}"
-    group: "{{ rsync_user }}"
-    mode: '0755'
-    state: directory
-
-- name: Template mirrorsync script
-  ansible.builtin.template:
-    src: mirrorsync.j2
-    dest: "{{ archlinux_script }}"
-    mode: '0755'
-
-- name: Schedule cronjob
-  ansible.builtin.cron:
-    name: sync archlinux repo
-    user: "{{ rsync_user }}"
-    job: "{{ archlinux_script }}"
-    minute: "{{ archlinux_schedule.minute }}"
-    hour: "{{ archlinux_schedule.hour }}"
-    day: "{{ archlinux_schedule.day }}"
-    month: "{{ archlinux_schedule.month }}"
-    weekday: "{{ archlinux_schedule.weekday }}"
-  tags: cron
+- name: Import mirrorsync role
+  ansible.builtin.import_role:
+    name: mirrorsync
+  vars:
+    mirrorsync_name: archlinux

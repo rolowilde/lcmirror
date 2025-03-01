@@ -7,7 +7,7 @@ debian_logdir: /var/log/debian
 debian_schedule: "{{ cron_dummy_schedule | default(None) }}"
 
 debian_cd: true
-debian_cd_lock: /tmp/mirrorsync-debian-cd.lck
-debian_cd_delay_updates: true
 debian_cd_source_url: rsync://cdimage.debian.org/debian-cd/
-debian_cd_schedule: "{{ cron_dummy_schedule | default(None) }}"
+debian_cd_lastupdate_url: https://cdimage.debian.org/debian-cd/project/trace/cdimage.debian.org
+debian_cd_lastupdate_file: "$TARGET/project/trace/{{ debian_mirrorname }}"
+debian_cd_postscript: curl --clobber -Lo "$LASTUPDATE_FILE" "$LASTUPDATE_URL" >/dev/null

@@ -1,26 +1,6 @@
 ---
-- name: Create target directory
-  ansible.builtin.file:
-    path: "{{ debian_cd_target }}"
-    owner: "{{ rsync_user }}"
-    group: "{{ rsync_user }}"
-    mode: '0755'
-    state: directory
-
-- name: Template mirrorsync script
-  ansible.builtin.template:
-    src: mirrorsync.j2
-    dest: "{{ debian_cd_script }}"
-    mode: '0755'
-
-- name: Schedule cronjob
-  ansible.builtin.cron:
-    name: sync debian cd repo
-    user: "{{ rsync_user }}"
-    job: "{{ debian_cd_script }}"
-    minute: "{{ debian_cd_schedule.minute }}"
-    hour: "{{ debian_cd_schedule.hour }}"
-    day: "{{ debian_cd_schedule.day }}"
-    month: "{{ debian_cd_schedule.month }}"
-    weekday: "{{ debian_cd_schedule.weekday }}"
-  tags: cron
+- name: Import mirrorsync role
+  ansible.builtin.import_role:
+    name: mirrorsync
+  vars:
+    mirrorsync_name: debian_cd
