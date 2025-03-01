@@ -1,7 +1,7 @@
 ---
 - name: Install packages
   ansible.builtin.package:
-    name: "{{ debian_packages }}"
+    name: "{{ debian_archive_packages }}"
     state: present
 
 - name: Include archive tasks

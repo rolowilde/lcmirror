@@ -1,13 +1,13 @@
 ---
 - name: Clone archvsync repository
   ansible.builtin.git:
-    repo: "{{ debian_repo_git }}"
-    version: "{{ debian_repo_version }}"
-    dest: "{{ debian_repo_path }}"
+    repo: "{{ debian_archive_repo_git }}"
+    version: "{{ debian_archive_repo_version }}"
+    dest: "{{ debian_archive_repo_path }}"
 
 - name: Create target directory
   ansible.builtin.file:
-    path: "{{ debian_to }}"
+    path: "{{ debian_archive_to }}"
     owner: "{{ rsync_user }}"
     group: "{{ rsync_user }}"
     mode: '0755'
@@ -15,7 +15,7 @@
 
 - name: Create log directory
   ansible.builtin.file:
-    path: "{{ debian_logdir }}"
+    path: "{{ debian_archive_logdir }}"
     owner: "{{ rsync_user }}"
     group: "{{ rsync_user }}"
     mode: '0755'
@@ -24,17 +24,17 @@
 - name: Template ftpsync.conf
   ansible.builtin.template:
     src: ftpsync.conf.j2
-    dest: "{{ debian_repo_path }}/etc/ftpsync.conf"
+    dest: "{{ debian_archive_repo_path }}/etc/ftpsync.conf"
     mode: '0644'
 
 - name: Schedule cronjob
   ansible.builtin.cron:
     name: sync debian repo
     user: "{{ rsync_user }}"
-    job: "{{ debian_repo_path }}/bin/ftpsync-cron"
-    minute: "{{ debian_schedule.minute }}"
-    hour: "{{ debian_schedule.hour }}"
-    day: "{{ debian_schedule.day }}"
-    month: "{{ debian_schedule.month }}"
-    weekday: "{{ debian_schedule.weekday }}"
+    job: "{{ debian_archive_repo_path }}/bin/ftpsync-cron"
+    minute: "{{ debian_archive_schedule.minute }}"
+    hour: "{{ debian_archive_schedule.hour }}"
+    day: "{{ debian_archive_schedule.day }}"
+    month: "{{ debian_archive_schedule.month }}"
+    weekday: "{{ debian_archive_schedule.weekday }}"
   tags: cron
