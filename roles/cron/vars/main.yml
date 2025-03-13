@@ -8,9 +8,4 @@ cron_package: "{{ lookup('ansible.builtin.vars', 'cron_package_' + ansible_os_fa
 cron_service: "{{ lookup('ansible.builtin.vars', 'cron_service_' + ansible_os_family | lower) }}"
 
 # will never execute
-cron_dummy_schedule:
-  minute: 0
-  hour: 0
-  day: 31
-  month: 2
-  weekday: 1
+cron_job_dummy_expression: 0 0 31 2 1

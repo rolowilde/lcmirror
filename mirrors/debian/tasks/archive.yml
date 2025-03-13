@@ -27,14 +27,13 @@
     dest: "{{ debian_archive_repo_path }}/etc/ftpsync.conf"
     mode: '0644'
 
-- name: Schedule cronjob
-  ansible.builtin.cron:
-    name: sync debian repo
-    user: "{{ rsync_user }}"
-    job: "{{ debian_archive_repo_path }}/bin/ftpsync-cron"
-    minute: "{{ debian_archive_schedule.minute }}"
-    hour: "{{ debian_archive_schedule.hour }}"
-    day: "{{ debian_archive_schedule.day }}"
-    month: "{{ debian_archive_schedule.month }}"
-    weekday: "{{ debian_archive_schedule.weekday }}"
+- name: Import cronjob role
+  ansible.builtin.import_role:
+    name: cron
+    tasks_from: job
+  vars:
+    cron_job_name: debian-archive
+    cron_job_user: "{{ rsync_user }}"
+    cron_job_command: "{{ debian_archive_repo_path }}/bin/ftpsync-cron"
+    cron_job_expression: "{{ debian_archive_schedule | default('') }}"
   tags: cron

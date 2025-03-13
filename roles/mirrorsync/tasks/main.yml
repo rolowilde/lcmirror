@@ -1,7 +1,6 @@
 ---
 - name: Set facts
   ansible.builtin.set_fact:
-    cron_dummy_schedule: "{{ cron_dummy_schedule | default({}) }}"
     mirrorsync_sanitized_name: "{{ mirrorsync_name | replace('_', '-') }}"
 
 - name: Set mirrorsync definition
@@ -21,7 +20,7 @@
       rsync_options: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_rsync_options', default=[]) }}"
       prescript: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_prescript', default='') }}"
       postscript: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_postscript', default='') }}"
-      schedule: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_schedule', default=cron_dummy_schedule) }}"
+      schedule: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_schedule', default='') }}"
 
 - name: Output mirrorsync definition
   ansible.builtin.debug:
@@ -54,14 +53,13 @@
     dest: "{{ mirrorsync_definition.script }}"
     mode: '0755'
 
-- name: Schedule cronjob
-  ansible.builtin.cron:
-    name: "sync {{ mirrorsync_sanitized_name }} repo"
-    user: "{{ rsync_user }}"
-    job: "{{ mirrorsync_definition.script }}"
-    minute: "{{ mirrorsync_definition.schedule.minute }}"
-    hour: "{{ mirrorsync_definition.schedule.hour }}"
-    day: "{{ mirrorsync_definition.schedule.day }}"
-    month: "{{ mirrorsync_definition.schedule.month }}"
-    weekday: "{{ mirrorsync_definition.schedule.weekday }}"
+- name: Import cronjob role
+  ansible.builtin.import_role:
+    name: cron
+    tasks_from: job
+  vars:
+    cron_job_name: "{{ mirrorsync_sanitized_name }}"
+    cron_job_user: "{{ rsync_user }}"
+    cron_job_command: "{{ mirrorsync_definition.script }}"
+    cron_job_expression: "{{ mirrorsync_definition.schedule }}"
   tags: cron

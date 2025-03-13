@@ -5,7 +5,6 @@ debian_archive_mirrorname: "{{ ansible_fqdn }}"
 debian_archive_rsync_host: ftp-master.debian.org
 debian_archive_rsync_path: debian
 debian_archive_logdir: /var/log/debian
-debian_archive_schedule: "{{ cron_dummy_schedule | default(None) }}"
 
 debian_cd: true
 debian_cd_logdir: /var/log/debian

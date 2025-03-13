@@ -3,7 +3,7 @@
   ansible.builtin.set_fact:
     ubumirror_dir: "{{ lookup('ansible.builtin.vars', 'ubuntu_' + ubumirror + '_dir') }}"
     ubumirror_script: "{{ ubuntu_repo_path }}/ubu{{ ubumirror }}"
-    ubumirror_schedule: "{{ lookup('ansible.builtin.vars', 'ubuntu_' + ubumirror + '_schedule') }}"
+    ubumirror_schedule: "{{ lookup('ansible.builtin.vars', 'ubuntu_' + ubumirror + '_schedule', default='') }}"
 
 - name: Output facts
   ansible.builtin.debug:
@@ -20,14 +20,13 @@
     mode: '0755'
     state: directory
 
-- name: Schedule cronjob
-  ansible.builtin.cron:
-    name: "sync ubuntu {{ ubumirror }} repo"
-    user: "{{ rsync_user }}"
-    job: "{{ ubumirror_script }}"
-    minute: "{{ ubumirror_schedule.minute }}"
-    hour: "{{ ubumirror_schedule.hour }}"
-    day: "{{ ubumirror_schedule.day }}"
-    month: "{{ ubumirror_schedule.month }}"
-    weekday: "{{ ubumirror_schedule.weekday }}"
+- name: Import cronjob role
+  ansible.builtin.import_role:
+    name: cron
+    tasks_from: job
+  vars:
+    cron_job_name: "ubuntu-{{ ubumirror }}"
+    cron_job_user: "{{ rsync_user }}"
+    cron_job_command: "{{ ubumirror_script }}"
+    cron_job_expression: "{{ ubumirror_schedule }}"
   tags: cron
