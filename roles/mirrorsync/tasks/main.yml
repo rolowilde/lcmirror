@@ -14,6 +14,7 @@
       lastupdate_url: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_lastupdate_url', default='') }}"
       lastupdate_file: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_lastupdate_file', default='') }}"
       logdir: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_logdir', default='/var/log/' + mirrorsync_sanitized_name) }}"
+      logfile: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_logfile', default='mirrorsync.log') }}"
       logcycle: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_logcycle', default=7) }}"
       timeout: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_timeout', default=600) }}"
       contimeout: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_contimeout', default=60) }}"

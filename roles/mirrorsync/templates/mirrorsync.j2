@@ -4,8 +4,7 @@ LOCK="{{ mirrorsync_definition.lock }}"
 SOURCE_URL="{{ mirrorsync_definition.source_url }}"
 LASTUPDATE_URL="{{ mirrorsync_definition.lastupdate_url }}"
 LASTUPDATE_FILE="{{ mirrorsync_definition.lastupdate_file }}"
-LOGDIR="{{ mirrorsync_definition.logdir }}"
-LOGFILE="$LOGDIR/mirrorsync.log"
+LOGFILE="{{ mirrorsync_definition.logdir }}/{{ mirrorsync_definition.logfile }}"
 LOGCYCLE={{ mirrorsync_definition.logcycle }}
 RSYNC_OPTIONS=(
 	-rlptH
