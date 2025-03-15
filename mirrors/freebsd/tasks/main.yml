@@ -1,0 +1,6 @@
+---
+- name: Import mirrorsync role
+  ansible.builtin.import_role:
+    name: mirrorsync
+  vars:
+    mirrorsync_name: freebsd
