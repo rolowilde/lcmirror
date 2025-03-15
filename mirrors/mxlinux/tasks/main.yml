@@ -1,0 +1,14 @@
+---
+- name: Include mirrorsync role (packages)
+  ansible.builtin.include_role:
+    name: mirrorsync
+  vars:
+    mirrorsync_name: mxlinux_packages
+  when: mxlinux_packages
+
+- name: Include mirrorsync role (iso)
+  ansible.builtin.import_role:
+    name: mirrorsync
+  vars:
+    mirrorsync_name: mxlinux_iso
+  when: mxlinux_iso

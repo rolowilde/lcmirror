@@ -9,4 +9,5 @@
     - { role: debian, tags: debian }
     - { role: ubuntu, tags: ubuntu }
     - { role: freebsd, tags: freebsd }
+    - { role: mxlinux, tags: mxlinux }
     - { role: caddy, tags: caddy }
