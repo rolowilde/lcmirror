@@ -2,3 +2,7 @@
 rsync_user: rsync
 rsync_uid: 5501
 rsync_root: /srv/mirror
+rsync_log_file: /var/log/rsyncd.log
+rsync_config_src: rsyncd.conf.j2
+rsync_motd_file: /etc/rsyncd-motd
+rsync_motd_content: Welcome to {{ ansible_fqdn }}!

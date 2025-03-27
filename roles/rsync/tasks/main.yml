@@ -28,3 +28,28 @@
     group: "{{ rsync_user }}"
     mode: '0755'
     state: directory
+
+- name: Enable and start rsyncd
+  ansible.builtin.service:
+    name: rsync
+    enabled: true
+    state: started
+
+- name: Create log file
+  ansible.builtin.file:
+    path: "{{ rsync_log_file }}"
+    state: touch
+    mode: '0644'
+
+- name: Create motd file
+  ansible.builtin.copy:
+    content: "{{ rsync_motd_content }}"
+    dest: "{{ rsync_motd_file }}"
+    mode: '0644'
+
+- name: Template rsyncd.conf
+  ansible.builtin.template:
+    src: "{{ rsync_config_src }}"
+    dest: /etc/rsyncd.conf
+    mode: '0644'
+  notify: restart rsyncd
