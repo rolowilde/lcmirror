@@ -11,3 +11,4 @@
     - { role: freebsd, tags: freebsd }
     - { role: mxlinux, tags: mxlinux }
     - { role: caddy, tags: caddy }
+    - { role: ftp, tags: ftp }

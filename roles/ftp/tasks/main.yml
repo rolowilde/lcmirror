@@ -1,0 +1,45 @@
+---
+- name: Install vsftpd
+  ansible.builtin.package:
+    name: vsftpd
+    state: present
+
+- name: Enable and start vsftpd
+  ansible.builtin.service:
+    name: vsftpd
+    enabled: true
+    state: started
+
+- name: Template ftpusers
+  ansible.builtin.template:
+    src: "{{ ftp_userlist_src }}"
+    dest: /etc/ftpusers
+    mode: '0644'
+  notify: restart ftp
+
+- name: Template vsftpd.conf
+  ansible.builtin.template:
+    src: "{{ ftp_config_src }}"
+    dest: /etc/vsftpd.conf
+    mode: '0644'
+  notify: restart ftp
+
+- name: Allow PAM users specified in ftpusers
+  community.general.pamd:
+    name: vsftpd
+    type: auth
+    control: required
+    module_path: pam_listfile.so
+    module_arguments: "item=user sense=allow file=/etc/ftpusers"
+    state: updated
+  notify: restart ftp
+
+- name: Allow PAM nologin shell for ftp users
+  community.general.pamd:
+    name: vsftpd
+    type: auth
+    control: required
+    module_path: pam_shells.so
+    new_module_path: pam_nologin.so
+    state: updated
+  notify: restart ftp
