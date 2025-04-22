@@ -5,7 +5,7 @@ Production-ready software distribution mirror deployment solution. This Ansible 
 ## Repos
 
 | Name | Scripts | Implemented |
-| ------ | ------- | ----------- |
+| ---- | ------- | ----------- |
 | Arch Linux | mirrorsync* | ✅ |
 | Debian | [archvsync](https://salsa.debian.org/mirror-team/archvsync) | ✅ (archive, cdimage) |
 | Ubuntu | [ubumirror](https://github.com/rolowilde/ubumirror) | ✅ (archive, cdimage, release, ports, cloudimage) |
