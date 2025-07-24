@@ -11,7 +11,7 @@ Production-ready software distribution mirror deployment solution. This Ansible 
 | Ubuntu | [ubumirror](https://github.com/rolowilde/ubumirror) | ✅ (archive, cdimage, release, ports, cloudimage) |
 | FreeBSD | mirrorsync | ✅ |
 | MX Linux | mirrorsync | ✅ (packages, iso) |
-| Linux Mint | mirrorsync | ⌛ |
+| Linux Mint | mirrorsync | ✅ (packages, iso) |
 | Fedora | [quick-fedora-mirror](https://pagure.io/quick-fedora-mirror) | ⌛ |
 
 **[mirrorsync.j2](https://gitlab.archlinux.org/archlinux/infrastructure/-/blob/1d5dbcd5819c4e9a340c1427fba0e0552c790fd2/roles/mirrorsync/templates/mirrorsync.j2), courtesy of Arch Infra maintainers, modified to be as generic as possible*
