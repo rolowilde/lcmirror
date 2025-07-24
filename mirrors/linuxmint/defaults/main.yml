@@ -1,0 +1,10 @@
+---
+linuxmint_packages: true
+linuxmint_packages_source_url: rsync://rsync-packages.linuxmint.com/packages
+linuxmint_packages_logdir: /var/log/linuxmint
+linuxmint_packages_logfile: mirrorsync-packages.log
+
+linuxmint_iso: true
+linuxmint_iso_source_url: rsync://pub.linuxmint.com/pub
+linuxmint_iso_logdir: /var/log/linuxmint
+linuxmint_iso_logfile: mirrorsync-iso.log

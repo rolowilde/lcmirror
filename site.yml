@@ -10,5 +10,6 @@
     - { role: ubuntu, tags: ubuntu }
     - { role: freebsd, tags: freebsd }
     - { role: mxlinux, tags: mxlinux }
+    - { role: linuxmint, tags: linuxmint }
     - { role: caddy, tags: caddy }
     - { role: ftp, tags: ftp }
