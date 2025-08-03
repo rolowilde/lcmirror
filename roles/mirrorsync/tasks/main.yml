@@ -6,7 +6,7 @@
 - name: Set mirrorsync definition
   ansible.builtin.set_fact:
     mirrorsync_definition:
-      packages: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_packages', default=['bash', 'curl']) }}"
+      packages: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_packages', default=['bash', 'curl', 'rsync']) }}"
       script: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_script', default='/usr/bin/mirrorsync-' + mirrorsync_sanitized_name) }}"
       target: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_target', default=rsync_root + '/' + mirrorsync_sanitized_name) }}"
       lock: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_lock', default='/tmp/mirrorsync-' + mirrorsync_sanitized_name + '.lck') }}"
