@@ -3,13 +3,57 @@
   hosts: mirrors
   become: true
   roles:
-    - { role: update, tags: update }
-    - { role: cron, tags: cron }
-    - { role: archlinux, tags: archlinux }
-    - { role: debian, tags: debian }
-    - { role: ubuntu, tags: ubuntu }
-    - { role: freebsd, tags: freebsd }
-    - { role: mxlinux, tags: mxlinux }
-    - { role: linuxmint, tags: linuxmint }
-    - { role: caddy, tags: caddy }
-    - { role: ftp, tags: ftp }
+    - role: common
+      tags: always
+
+    - role: robertdebock.update
+      tags: update
+
+    - role: robertdebock.users
+      vars:
+        users: "{{ common_users | default([]) }}"
+      tags: users
+
+    - role: archlinux
+      tags: archlinux
+
+    - role: debian
+      tags: debian
+
+    - role: ubuntu
+      tags: ubuntu
+
+    - role: freebsd
+      tags: freebsd
+
+    - role: mxlinux
+      tags: mxlinux
+
+    - role: linuxmint
+      tags: linuxmint
+
+    - role: maxhoesel.caddy.caddy_server
+      tags: caddy
+
+    - role: infOpen.rsync-server
+      vars:
+        rsync_server_group:
+          name: "{{ common_rsync_user }}"
+        rsync_server_user:
+          name: "{{ common_rsync_user }}"
+        rsync_default_global_config: |-
+          uid = {{ common_rsync_user }}
+          gid = {{ common_rsync_user }}
+          log file = /var/log/rsync/rsyncd.log
+        rsync_server_config_main:
+          global: "{{ rsync_global_config | default(rsync_default_global_config) }}"
+          modules: "{{ common_rsync_modules | default([]) }}"
+      tags: rsyncd
+
+    - role: robertdebock.vsftpd
+      tags: vsftpd
+
+    - role: robertdebock.cron
+      vars:
+        cron_jobs: "{{ common_cron_jobs | default([]) }}"
+      tags: cron

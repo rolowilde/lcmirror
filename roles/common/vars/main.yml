@@ -1,0 +1,10 @@
+---
+common_rsync_default_user:
+  name: "{{ common_rsync_user }}"
+  shell: /usr/sbin/nologin
+  # uid: "{{ common_rsync_uid }}"
+  system: true
+  password_lock: true
+  cron_allow: true
+  create_home: true
+  home: "{{ common_rsync_root }}"

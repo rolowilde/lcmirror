@@ -1,0 +1,6 @@
+---
+# noqa: var-naming[no-role-prefix]
+- name: Add rsync user if not in common_users
+  ansible.builtin.set_fact:
+    common_users: "{{ common_users + [common_rsync_default_user] }}"
+  when: (common_users | selectattr('name', 'match', common_rsync_user) | list | length) == 0

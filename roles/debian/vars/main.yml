@@ -1,0 +1,6 @@
+---
+debian_archive_packages: [bash, curl, rsync, git]
+debian_archive_repo_git: https://salsa.debian.org/mirror-team/archvsync.git
+debian_archive_repo_version: 653357779c338863917aa069afbae1b24472d32d
+debian_archive_repo_path: /opt/archvsync
+debian_archive_job: "{{ debian_archive_repo_path }}/bin/ftpsync-cron"

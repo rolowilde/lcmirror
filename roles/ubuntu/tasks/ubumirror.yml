@@ -1,0 +1,57 @@
+---
+- name: "Set facts : {{ ubumirror }}"
+  ansible.builtin.set_fact:
+    ubuntu_definition:
+      dir: "{{ lookup('ansible.builtin.vars', 'ubuntu_' + ubumirror + '_dir') }}"
+      script: "{{ ubuntu_repo_path }}/ubu{{ ubumirror }}"
+      schedule: "{{ lookup('ansible.builtin.vars', 'ubuntu_' + ubumirror + '_schedule', default=common_cron_expression) | ansible.builtin.split }}"
+      comment: "Ubuntu {{ ubumirror | capitalize }}"
+
+- name: "Output ubumirror definition : {{ ubumirror }}"
+  ansible.builtin.debug:
+    var: ubuntu_definition
+
+- name: "Create dir : {{ ubumirror }}"
+  ansible.builtin.file:
+    path: "{{ ubuntu_definition.dir }}"
+    owner: "{{ common_rsync_user }}"
+    group: "{{ common_rsync_user }}"
+    mode: '0755'
+    state: directory
+
+- name: "Set rsync module fact : {{ ubumirror }}"
+  ansible.builtin.set_fact:
+    ubuntu_rsync_module:
+      name: "ubuntu-{{ ubumirror }}"
+      config: |
+        path = {{ ubuntu_definition.dir }}
+        comment = {{ ubuntu_definition.comment }}
+        read only = yes
+        list = yes
+  tags: rsync
+
+# noqa: var-naming[no-role-prefix]
+- name: "Append to common_rsync_modules : {{ ubumirror }}"
+  ansible.builtin.set_fact:
+    common_rsync_modules: "{{ common_rsync_modules + [ubuntu_rsync_module] }}"
+  tags: rsync
+
+- name: "Set cron job fact : {{ ubumirror }}"
+  ansible.builtin.set_fact:
+    ubuntu_cron_job:
+      name: "ubuntu-{{ ubumirror }}"
+      minute: "{{ ubuntu_definition.schedule[0] }}"
+      hour: "{{ ubuntu_definition.schedule[1] }}"
+      day: "{{ ubuntu_definition.schedule[2] }}"
+      month: "{{ ubuntu_definition.schedule[3] }}"
+      weekday: "{{ ubuntu_definition.schedule[4] }}"
+      job: "{{ ubuntu_definition.script }}"
+      user: "{{ common_rsync_user }}"
+      state: present
+  tags: cron
+
+# noqa: var-naming[no-role-prefix]
+- name: "Append to common_cron_jobs : {{ ubumirror }}"
+  ansible.builtin.set_fact:
+    common_cron_jobs: "{{ common_cron_jobs + [ubuntu_cron_job] }}"
+  tags: cron

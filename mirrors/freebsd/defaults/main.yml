@@ -1,4 +1,0 @@
----
-freebsd_source_url: rsync://ftp-master.FreeBSD.org/FreeBSD/
-freebsd_lastupdate_url: https://ftp.freebsd.org/FreeBSD/TIMESTAMP
-freebsd_lastupdate_file: $TARGET/TIMESTAMP

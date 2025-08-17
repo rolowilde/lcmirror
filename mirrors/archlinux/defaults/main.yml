@@ -1,4 +1,0 @@
----
-archlinux_source_url: rsync://rsync.archlinux.org/ftp_tier1
-archlinux_lastupdate_url: https://rsync.archlinux.org/lastupdate
-archlinux_lastupdate_file: $TARGET/lastupdate

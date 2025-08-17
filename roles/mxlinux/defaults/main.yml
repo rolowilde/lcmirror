@@ -1,0 +1,14 @@
+---
+mxlinux_packages: true
+mxlinux_packages_source_url: rsync://mirror.accum.se/mirror/mxlinux.org/packages/
+mxlinux_packages_logdir: /var/log/mxlinux
+mxlinux_packages_logfile: mirrorsync-packages.log
+mxlinux_packages_comment: MX Linux Packages
+
+mxlinux_iso: true
+mxlinux_iso_source_url: rsync://mirror.accum.se/mirror/mxlinux.org/isos/
+mxlinux_iso_lastupdate_url: https://mirror.accum.se/mirror/mxlinux.org/isos/TIME.txt
+mxlinux_iso_lastupdate_file: $TARGET/TIME.txt
+mxlinux_iso_logdir: /var/log/mxlinux
+mxlinux_iso_logfile: mirrorsync-iso.log
+mxlinux_iso_comment: MX Linux ISOs

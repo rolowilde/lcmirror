@@ -1,0 +1,5 @@
+---
+archlinux_source_url: rsync://mirror.accum.se/mirror/archlinux/
+archlinux_lastupdate_url: https://mirror.accum.se/mirror/archlinux/lastupdate
+archlinux_lastupdate_file: $TARGET/lastupdate
+archlinux_comment: Arch Linux

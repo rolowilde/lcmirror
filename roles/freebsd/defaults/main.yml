@@ -1,0 +1,5 @@
+---
+freebsd_source_url: https://ftp.de.freebsd.org/FreeBSD/
+freebsd_lastupdate_url: https://ftp.de.freebsd.org/FreeBSD/TIMESTAMP
+freebsd_lastupdate_file: $TARGET/TIMESTAMP
+freebsd_comment: FreeBSD

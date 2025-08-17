@@ -1,6 +1,0 @@
----
-ftp_config_src: vsftpd.conf.j2
-ftp_userlist_src: ftpusers.j2
-ftp_userlist_allowed: [anonymous]
-ftp_pasv_min_port: 50000
-ftp_pasv_max_port: 55000

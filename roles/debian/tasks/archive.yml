@@ -1,0 +1,70 @@
+---
+- name: Clone archvsync repository
+  ansible.builtin.git:
+    repo: "{{ debian_archive_repo_git }}"
+    version: "{{ debian_archive_repo_version }}"
+    dest: "{{ debian_archive_repo_path }}"
+
+- name: Create target directory
+  ansible.builtin.file:
+    path: "{{ debian_archive_to }}"
+    owner: "{{ common_rsync_user }}"
+    group: "{{ common_rsync_user }}"
+    mode: '0755'
+    state: directory
+
+- name: Create log directory
+  ansible.builtin.file:
+    path: "{{ debian_archive_logdir }}"
+    owner: "{{ common_rsync_user }}"
+    group: "{{ common_rsync_user }}"
+    mode: '0755'
+    state: directory
+
+- name: Template ftpsync.conf
+  ansible.builtin.template:
+    src: ftpsync.conf.j2
+    dest: "{{ debian_archive_repo_path }}/etc/ftpsync.conf"
+    mode: '0644'
+
+- name: Set rsync module fact
+  ansible.builtin.set_fact:
+    debian_rsync_module:
+      name: debian
+      config: |
+        path = {{ debian_archive_to }}
+        comment = Debian
+        read only = yes
+        list = yes
+  tags: rsync
+
+# noqa: var-naming[no-role-prefix]
+- name: Append to common_rsync_modules
+  ansible.builtin.set_fact:
+    common_rsync_modules: "{{ common_rsync_modules + [debian_rsync_module] }}"
+  tags: rsync
+
+- name: Set cron schedule fact
+  ansible.builtin.set_fact:
+    debian_archive_schedule: "{{ debian_archive_schedule | ansible.builtin.split }}"
+  tags: cron
+
+- name: Set cron job fact
+  ansible.builtin.set_fact:
+    debian_cron_job:
+      name: debian
+      minute: "{{ debian_archive_schedule[0] }}"
+      hour: "{{ debian_archive_schedule[1] }}"
+      day: "{{ debian_archive_schedule[2] }}"
+      month: "{{ debian_archive_schedule[3] }}"
+      weekday: "{{ debian_archive_schedule[4] }}"
+      job: "{{ debian_archive_job }}"
+      user: "{{ common_rsync_user }}"
+      state: present
+  tags: cron
+
+# noqa: var-naming[no-role-prefix]
+- name: Append to common_cron_jobs
+  ansible.builtin.set_fact:
+    common_cron_jobs: "{{ common_cron_jobs + [debian_cron_job] }}"
+  tags: cron
