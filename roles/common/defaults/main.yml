@@ -4,5 +4,3 @@ common_cron_jobs: []
 common_rsync_modules: []
 common_rsync_user: rsync
 common_rsync_root: /srv/mirror
-common_rsync_uid: 995
-common_cron_expression: 0 0 31 2 1
