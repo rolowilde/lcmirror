@@ -48,6 +48,7 @@
         rsync_server_config_main:
           global: "{{ rsync_global_config | default(rsync_default_global_config) }}"
           modules: "{{ common_rsync_modules | default([]) }}"
+        rsync_server_service: true
       tags: rsyncd
 
     - role: robertdebock.vsftpd
