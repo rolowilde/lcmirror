@@ -11,8 +11,8 @@
     - common_mirror_cron_script
 
 - name: "Configure rsyncd : {{ common_mirror_name }}"
-  tags: rsync
-  when: rsync | default(True)
+  tags: rsyncd
+  when: rsyncd | default(True)
   block:
     - name: "Set rsync module fact : {{ common_mirror_name }}"
       ansible.builtin.set_fact:
