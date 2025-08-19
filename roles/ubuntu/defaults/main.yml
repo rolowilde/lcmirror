@@ -8,19 +8,24 @@ ubuntu_io_timeout: 600
 ubuntu_archive: true
 ubuntu_archive_dir: "{{ common_rsync_root }}/ubuntu"
 ubuntu_archive_mirror: rsync://rsync.archive.ubuntu.com/ubuntu
+ubuntu_archive_comment: Ubuntu Archive
 
 ubuntu_cdimage: true
 ubuntu_cdimage_dir: "{{ common_rsync_root }}/ubuntu-cdimage"
 ubuntu_cdimage_mirror: rsync://rsync.cdimage.ubuntu.com/cdimage
+ubuntu_cdimage_comment: Ubuntu CD Images
 
 ubuntu_release: true
 ubuntu_release_dir: "{{ common_rsync_root }}/ubuntu-releases"
 ubuntu_release_mirror: rsync://rsync.releases.ubuntu.com/releases
+ubuntu_release_comment: Ubuntu Releases CD Images
 
 ubuntu_ports: true
 ubuntu_ports_dir: "{{ common_rsync_root }}/ubuntu-ports"
 ubuntu_ports_mirror: rsync://rsync.ports.ubuntu.com/ubuntu-ports
+ubuntu_ports_comment: Ubuntu Ports Archive
 
 ubuntu_cloudimage: true
 ubuntu_cloudimage_dir: "{{ common_rsync_root }}/ubuntu-cloud-images"
 ubuntu_cloudimage_mirror: rsync://cloud-images.ubuntu.com/cloud-images
+ubuntu_cloudimage_comment: Ubuntu Cloud Images

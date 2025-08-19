@@ -1,13 +1,13 @@
 ---
-- name: "Assert mirrorsync_name is not empty : {{ mirrorsync_name | default('') }}"
+- name: Assert mirrorsync_name is not empty
   ansible.builtin.assert:
     that: mirrorsync_name | default('', true) | trim != ''
 
-- name: "Set mirrorsync_sanitized_name fact : {{ mirrorsync_name }}"
+- name: Set mirrorsync_sanitized_name fact
   ansible.builtin.set_fact:
     mirrorsync_sanitized_name: "{{ mirrorsync_name | replace('_', '-') }}"
 
-- name: "Set mirrorsync definition : {{ mirrorsync_name }}"
+- name: "Set mirrorsync definition : {{ mirrorsync_sanitized_name }}"
   ansible.builtin.set_fact:
     mirrorsync_definition:
       packages: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_packages', default=['bash', 'curl', 'rsync']) }}"
@@ -25,19 +25,19 @@
       rsync_options: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_rsync_options', default=[]) }}"
       prescript: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_prescript', default='') }}"
       postscript: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_postscript', default='') }}"
-      schedule: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_schedule', default=common_cron_expression) | ansible.builtin.split }}"
+      schedule: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_schedule', default=common_cron_expression) }}"
       comment: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_comment', default='') }}"
 
-- name: "Output mirrorsync definition : {{ mirrorsync_name }}"
+- name: "Output mirrorsync definition : {{ mirrorsync_sanitized_name }}"
   ansible.builtin.debug:
     var: mirrorsync_definition
 
-- name: "Install packages : {{ mirrorsync_name }}"
+- name: "Install packages : {{ mirrorsync_sanitized_name }}"
   ansible.builtin.package:
     name: "{{ mirrorsync_definition.packages }}"
     state: present
 
-- name: "Create target directory : {{ mirrorsync_name }}"
+- name: "Create target directory : {{ mirrorsync_sanitized_name }}"
   ansible.builtin.file:
     path: "{{ mirrorsync_definition.target }}"
     owner: "{{ common_rsync_user }}"
@@ -45,7 +45,7 @@
     mode: '0755'
     state: directory
 
-- name: "Create log directory : {{ mirrorsync_name }}"
+- name: "Create log directory : {{ mirrorsync_sanitized_name }}"
   ansible.builtin.file:
     path: "{{ mirrorsync_definition.logdir }}"
     owner: "{{ common_rsync_user }}"
@@ -53,48 +53,19 @@
     mode: '0755'
     state: directory
 
-- name: "Template mirrorsync script : {{ mirrorsync_name }}"
+- name: "Template mirrorsync script : {{ mirrorsync_sanitized_name }}"
   ansible.builtin.template:
     src: mirrorsync.j2
     dest: "{{ mirrorsync_definition.script }}"
     mode: '0755'
 
-- name: "Configure rsyncd : {{ mirrorsync_name }}"
-  tags: rsync
-  when: rsync | default(True)
-  block:
-    - name: "Set rsync module fact : {{ mirrorsync_name }}"
-      ansible.builtin.set_fact:
-        mirrorsync_rsync_module:
-          name: "{{ mirrorsync_sanitized_name }}"
-          config: |
-            path = {{ mirrorsync_definition.target }}
-            comment = {{ mirrorsync_definition.comment }}
-            read only = yes
-            list = yes
-
-    # noqa: var-naming[no-role-prefix]
-    - name: "Append to common_rsync_modules : {{ mirrorsync_name }}"
-      ansible.builtin.set_fact:
-        common_rsync_modules: "{{ common_rsync_modules + [mirrorsync_rsync_module] }}"
-
-- name: "Configure crontab : {{ mirrorsync_name }}"
-  tags: cron
-  block:
-    - name: "Set cron job fact : {{ mirrorsync_name }}"
-      ansible.builtin.set_fact:
-        mirrorsync_cron_job:
-          name: "{{ mirrorsync_sanitized_name }}"
-          minute: "{{ mirrorsync_definition.schedule[0] }}"
-          hour: "{{ mirrorsync_definition.schedule[1] }}"
-          day: "{{ mirrorsync_definition.schedule[2] }}"
-          month: "{{ mirrorsync_definition.schedule[3] }}"
-          weekday: "{{ mirrorsync_definition.schedule[4] }}"
-          job: "{{ mirrorsync_definition.script }}"
-          user: "{{ common_rsync_user }}"
-          state: present
-
-    # noqa: var-naming[no-role-prefix]
-    - name: "Append to common_cron_jobs : {{ mirrorsync_name }}"
-      ansible.builtin.set_fact:
-        common_cron_jobs: "{{ common_cron_jobs + [mirrorsync_cron_job] }}"
+- name: Finalize mirror
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: mirror
+  vars:
+    common_mirror_name: "{{ mirrorsync_sanitized_name }}"
+    common_mirror_rsync_path: "{{ mirrorsync_definition.target }}"
+    common_mirror_rsync_comment: "{{ mirrorsync_definition.comment }}"
+    common_mirror_cron_expression: "{{ mirrorsync_definition.schedule }}"
+    common_mirror_cron_script: "{{ mirrorsync_definition.script }}"

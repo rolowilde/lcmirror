@@ -4,8 +4,8 @@
     ubuntu_definition:
       dir: "{{ lookup('ansible.builtin.vars', 'ubuntu_' + ubumirror + '_dir') }}"
       script: "{{ ubuntu_repo_path }}/ubu{{ ubumirror }}"
-      schedule: "{{ lookup('ansible.builtin.vars', 'ubuntu_' + ubumirror + '_schedule', default=common_cron_expression) | ansible.builtin.split }}"
-      comment: "Ubuntu {{ ubumirror | capitalize }}"
+      schedule: "{{ lookup('ansible.builtin.vars', 'ubuntu_' + ubumirror + '_schedule', default=common_cron_expression) }}"
+      comment: "{{ lookup('ansible.builtin.vars', 'ubuntu_' + ubumirror + '_comment') }}"
 
 - name: "Output ubumirror definition : {{ ubumirror }}"
   ansible.builtin.debug:
@@ -19,42 +19,14 @@
     mode: '0755'
     state: directory
 
-- name: Configure rsyncd
-  tags: rsync
-  when: rsync | default(True)
-  block:
-    - name: "Set rsync module fact : {{ ubumirror }}"
-      ansible.builtin.set_fact:
-        ubuntu_rsync_module:
-          name: "ubuntu-{{ ubumirror }}"
-          config: |
-            path = {{ ubuntu_definition.dir }}
-            comment = {{ ubuntu_definition.comment }}
-            read only = yes
-            list = yes
-
-    # noqa: var-naming[no-role-prefix]
-    - name: "Append to common_rsync_modules : {{ ubumirror }}"
-      ansible.builtin.set_fact:
-        common_rsync_modules: "{{ common_rsync_modules + [ubuntu_rsync_module] }}"
-
-- name: Configure crontab
-  tags: cron
-  block:
-    - name: "Set cron job fact : {{ ubumirror }}"
-      ansible.builtin.set_fact:
-        ubuntu_cron_job:
-          name: "ubuntu-{{ ubumirror }}"
-          minute: "{{ ubuntu_definition.schedule[0] }}"
-          hour: "{{ ubuntu_definition.schedule[1] }}"
-          day: "{{ ubuntu_definition.schedule[2] }}"
-          month: "{{ ubuntu_definition.schedule[3] }}"
-          weekday: "{{ ubuntu_definition.schedule[4] }}"
-          job: "{{ ubuntu_definition.script }}"
-          user: "{{ common_rsync_user }}"
-          state: present
-
-    # noqa: var-naming[no-role-prefix]
-    - name: "Append to common_cron_jobs : {{ ubumirror }}"
-      ansible.builtin.set_fact:
-        common_cron_jobs: "{{ common_cron_jobs + [ubuntu_cron_job] }}"
+- name: Finalize mirror
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: mirror
+  vars:
+    common_mirror_name: "ubuntu-{{ ubumirror }}"
+    common_mirror_rsync_name: "{{ 'ubuntu-' + ubumirror if ubumirror != 'archive' else 'ubuntu' }}"
+    common_mirror_rsync_path: "{{ ubuntu_definition.dir }}"
+    common_mirror_rsync_comment: "{{ ubuntu_definition.comment }}"
+    common_mirror_cron_expression: "{{ ubuntu_definition.schedule }}"
+    common_mirror_cron_script: "{{ ubuntu_definition.script }}"
