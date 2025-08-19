@@ -59,6 +59,8 @@
       when: rsyncd | default(True)
 
     - role: robertdebock.vsftpd
+      vars:
+        vsftpd_nopriv_user: "{{ common_vsftpd_user }}"
       tags: vsftpd
       when: vsftpd | default(True)
 
@@ -67,10 +69,44 @@
         cron_jobs: "{{ common_cron_jobs | default([]) }}"
       tags: cron
   tasks:
-    - name: Enable and start rsyncd
-      ansible.builtin.service:
-        name: "{{ rsync_server_service.name }}" # from role
-        enabled: true
-        state: started
-      when: rsyncd | default(True)
+    - name: Perform rsyncd tasks
       tags: rsyncd
+      when: rsyncd | default(True)
+      block:
+        - name: Enable and start rsyncd
+          ansible.builtin.service:
+            name: "{{ rsync_server_service.name }}" # from role
+            enabled: true
+            state: started
+
+    - name: Perform vsftpd tasks
+      tags: vsftpd
+      when: vsftpd | default(True)
+      vars:
+        vsftpd_userlist_file: /etc/vsftpd.user_list
+        vsftpd_files:
+          - vsftpd_xferlog_file
+          - vsftpd_banned_email_file
+          - vsftpd_chroot_list_file
+          - vsftpd_userlist_file
+      block:
+        - name: Create vsftpd directories
+          ansible.builtin.file:
+            path: "{{ lookup('ansible.builtin.vars', item) | ansible.builtin.dirname }}"
+            mode: '0755'
+            state: directory
+          loop: "{{ vsftpd_files }}"
+
+        - name: Touch vsftpd files
+          ansible.builtin.file:
+            path: "{{ lookup('ansible.builtin.vars', item) }}"
+            mode: '0644'
+            state: touch
+          loop: "{{ vsftpd_files }}"
+
+        - name: Symlink anonymous ftp root to rsync root
+          ansible.builtin.file:
+            src: "{{ common_rsync_root }}"
+            dest: "{{ common_vsftpd_root }}"
+            force: true
+            state: link

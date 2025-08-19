@@ -1,5 +1,8 @@
 ---
-- name: Add rsync user if not in common_users
+- name: Add system users if not in common_users
   ansible.builtin.set_fact:
     common_users: "{{ common_users + [common_rsync_default_user] }}"
-  when: (common_users | selectattr('name', 'match', common_rsync_user) | list | length) == 0
+  when: (common_users | selectattr('name', 'match', item) | list | length) == 0
+  loop:
+    - "{{ common_rsync_user }}"
+    - "{{ common_vsftpd_user }}"

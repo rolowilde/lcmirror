@@ -8,3 +8,11 @@ common_rsync_default_user:
   cron_allow: true
   create_home: true
   home: "{{ common_rsync_root }}"
+common_vsftpd_default_user:
+  name: "{{ common_vsftpd_user }}"
+  shell: /usr/sbin/nologin
+  system: true
+  password_lock: true
+  cron_allow: false
+  create_home: true
+  home: "{{ common_vsftpd_root }}"
