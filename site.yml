@@ -104,6 +104,15 @@
             state: touch
           loop: "{{ vsftpd_files }}"
 
+        - name: Create vsftpd files with content
+          ansible.builtin.copy:
+            content: "{{ lookup('ansible.builtin.vars', item[:-5]) }}" # same var without _file
+            dest: "{{ lookup('ansible.builtin.vars', item) }}"
+            mode: '0644'
+          loop: "{{ vsftpd_files }}"
+          notify: Restart vsftpd
+          when: lookup('ansible.builtin.vars', item[:-5]) | default('', true) | trim != ''
+
         - name: Symlink anonymous ftp root to rsync root
           ansible.builtin.file:
             src: "{{ common_rsync_root }}"
