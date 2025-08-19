@@ -55,7 +55,6 @@
         rsync_server_config_main:
           global: "{{ rsync_global_config | default(rsync_default_global_config) }}"
           modules: "{{ common_rsync_modules | default([]) }}"
-        rsync_server_service: true
       tags: rsyncd
       when: rsyncd | default(True)
 
@@ -67,3 +66,11 @@
       vars:
         cron_jobs: "{{ common_cron_jobs | default([]) }}"
       tags: cron
+  tasks:
+    - name: Enable and start rsyncd
+      ansible.builtin.service:
+        name: "{{ rsync_server_service.name }}" # from role
+        enabled: true
+        state: started
+      when: rsyncd | default(True)
+      tags: rsyncd
