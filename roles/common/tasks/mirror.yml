@@ -1,12 +1,14 @@
 ---
 - name: Assert required vars
   ansible.builtin.assert:
-    that:
-      - common_mirror_name | default('', true) | trim != ''
-      - common_mirror_rsync_path | default('', true) | trim != ''
-      - common_mirror_rsync_comment | default('', true) | trim != ''
-      - common_mirror_cron_expression | default('', true) | trim != ''
-      - common_mirror_cron_script | default('', true) | trim != ''
+    that: item | default('', true) | trim != ''
+    quiet: true
+  loop:
+    - common_mirror_name
+    - common_mirror_rsync_path
+    - common_mirror_rsync_comment
+    - common_mirror_cron_expression
+    - common_mirror_cron_script
 
 - name: "Configure rsyncd : {{ common_mirror_name }}"
   tags: rsync
