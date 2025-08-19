@@ -19,39 +19,42 @@
     mode: '0755'
     state: directory
 
-- name: "Set rsync module fact : {{ ubumirror }}"
-  ansible.builtin.set_fact:
-    ubuntu_rsync_module:
-      name: "ubuntu-{{ ubumirror }}"
-      config: |
-        path = {{ ubuntu_definition.dir }}
-        comment = {{ ubuntu_definition.comment }}
-        read only = yes
-        list = yes
+- name: Configure rsyncd
   tags: rsync
+  when: rsync | default(True)
+  block:
+    - name: "Set rsync module fact : {{ ubumirror }}"
+      ansible.builtin.set_fact:
+        ubuntu_rsync_module:
+          name: "ubuntu-{{ ubumirror }}"
+          config: |
+            path = {{ ubuntu_definition.dir }}
+            comment = {{ ubuntu_definition.comment }}
+            read only = yes
+            list = yes
 
-# noqa: var-naming[no-role-prefix]
-- name: "Append to common_rsync_modules : {{ ubumirror }}"
-  ansible.builtin.set_fact:
-    common_rsync_modules: "{{ common_rsync_modules + [ubuntu_rsync_module] }}"
-  tags: rsync
+    # noqa: var-naming[no-role-prefix]
+    - name: "Append to common_rsync_modules : {{ ubumirror }}"
+      ansible.builtin.set_fact:
+        common_rsync_modules: "{{ common_rsync_modules + [ubuntu_rsync_module] }}"
 
-- name: "Set cron job fact : {{ ubumirror }}"
-  ansible.builtin.set_fact:
-    ubuntu_cron_job:
-      name: "ubuntu-{{ ubumirror }}"
-      minute: "{{ ubuntu_definition.schedule[0] }}"
-      hour: "{{ ubuntu_definition.schedule[1] }}"
-      day: "{{ ubuntu_definition.schedule[2] }}"
-      month: "{{ ubuntu_definition.schedule[3] }}"
-      weekday: "{{ ubuntu_definition.schedule[4] }}"
-      job: "{{ ubuntu_definition.script }}"
-      user: "{{ common_rsync_user }}"
-      state: present
+- name: Configure crontab
   tags: cron
+  block:
+    - name: "Set cron job fact : {{ ubumirror }}"
+      ansible.builtin.set_fact:
+        ubuntu_cron_job:
+          name: "ubuntu-{{ ubumirror }}"
+          minute: "{{ ubuntu_definition.schedule[0] }}"
+          hour: "{{ ubuntu_definition.schedule[1] }}"
+          day: "{{ ubuntu_definition.schedule[2] }}"
+          month: "{{ ubuntu_definition.schedule[3] }}"
+          weekday: "{{ ubuntu_definition.schedule[4] }}"
+          job: "{{ ubuntu_definition.script }}"
+          user: "{{ common_rsync_user }}"
+          state: present
 
-# noqa: var-naming[no-role-prefix]
-- name: "Append to common_cron_jobs : {{ ubumirror }}"
-  ansible.builtin.set_fact:
-    common_cron_jobs: "{{ common_cron_jobs + [ubuntu_cron_job] }}"
-  tags: cron
+    # noqa: var-naming[no-role-prefix]
+    - name: "Append to common_cron_jobs : {{ ubumirror }}"
+      ansible.builtin.set_fact:
+        common_cron_jobs: "{{ common_cron_jobs + [ubuntu_cron_job] }}"

@@ -59,39 +59,42 @@
     dest: "{{ mirrorsync_definition.script }}"
     mode: '0755'
 
-- name: "Set rsync module fact : {{ mirrorsync_name }}"
-  ansible.builtin.set_fact:
-    mirrorsync_rsync_module:
-      name: "{{ mirrorsync_sanitized_name }}"
-      config: |
-        path = {{ mirrorsync_definition.target }}
-        comment = {{ mirrorsync_definition.comment }}
-        read only = yes
-        list = yes
+- name: "Configure rsyncd : {{ mirrorsync_name }}"
   tags: rsync
+  when: rsync | default(True)
+  block:
+    - name: "Set rsync module fact : {{ mirrorsync_name }}"
+      ansible.builtin.set_fact:
+        mirrorsync_rsync_module:
+          name: "{{ mirrorsync_sanitized_name }}"
+          config: |
+            path = {{ mirrorsync_definition.target }}
+            comment = {{ mirrorsync_definition.comment }}
+            read only = yes
+            list = yes
 
-# noqa: var-naming[no-role-prefix]
-- name: "Append to common_rsync_modules : {{ mirrorsync_name }}"
-  ansible.builtin.set_fact:
-    common_rsync_modules: "{{ common_rsync_modules + [mirrorsync_rsync_module] }}"
-  tags: rsync
+    # noqa: var-naming[no-role-prefix]
+    - name: "Append to common_rsync_modules : {{ mirrorsync_name }}"
+      ansible.builtin.set_fact:
+        common_rsync_modules: "{{ common_rsync_modules + [mirrorsync_rsync_module] }}"
 
-- name: "Set cron job fact : {{ mirrorsync_name }}"
-  ansible.builtin.set_fact:
-    mirrorsync_cron_job:
-      name: "{{ mirrorsync_sanitized_name }}"
-      minute: "{{ mirrorsync_definition.schedule[0] }}"
-      hour: "{{ mirrorsync_definition.schedule[1] }}"
-      day: "{{ mirrorsync_definition.schedule[2] }}"
-      month: "{{ mirrorsync_definition.schedule[3] }}"
-      weekday: "{{ mirrorsync_definition.schedule[4] }}"
-      job: "{{ mirrorsync_definition.script }}"
-      user: "{{ common_rsync_user }}"
-      state: present
+- name: "Configure crontab : {{ mirrorsync_name }}"
   tags: cron
+  block:
+    - name: "Set cron job fact : {{ mirrorsync_name }}"
+      ansible.builtin.set_fact:
+        mirrorsync_cron_job:
+          name: "{{ mirrorsync_sanitized_name }}"
+          minute: "{{ mirrorsync_definition.schedule[0] }}"
+          hour: "{{ mirrorsync_definition.schedule[1] }}"
+          day: "{{ mirrorsync_definition.schedule[2] }}"
+          month: "{{ mirrorsync_definition.schedule[3] }}"
+          weekday: "{{ mirrorsync_definition.schedule[4] }}"
+          job: "{{ mirrorsync_definition.script }}"
+          user: "{{ common_rsync_user }}"
+          state: present
 
-# noqa: var-naming[no-role-prefix]
-- name: "Append to common_cron_jobs : {{ mirrorsync_name }}"
-  ansible.builtin.set_fact:
-    common_cron_jobs: "{{ common_cron_jobs + [mirrorsync_cron_job] }}"
-  tags: cron
+    # noqa: var-naming[no-role-prefix]
+    - name: "Append to common_cron_jobs : {{ mirrorsync_name }}"
+      ansible.builtin.set_fact:
+        common_cron_jobs: "{{ common_cron_jobs + [mirrorsync_cron_job] }}"

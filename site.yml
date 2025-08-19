@@ -16,24 +16,31 @@
 
     - role: archlinux
       tags: archlinux
+      when: archlinux | default(True)
 
     - role: debian
       tags: debian
+      when: debian | default(True)
 
     - role: ubuntu
       tags: ubuntu
+      when: ubuntu | default(True)
 
     - role: freebsd
       tags: freebsd
+      when: freebsd | default(True)
 
     - role: mxlinux
       tags: mxlinux
+      when: mxlinux | default(True)
 
     - role: linuxmint
       tags: linuxmint
+      when: linuxmint | default(True)
 
     - role: maxhoesel.caddy.caddy_server
       tags: caddy
+      when: caddy | default(True)
 
     - role: infOpen.rsync-server
       vars:
@@ -50,9 +57,11 @@
           modules: "{{ common_rsync_modules | default([]) }}"
         rsync_server_service: true
       tags: rsyncd
+      when: rsyncd | default(True)
 
     - role: robertdebock.vsftpd
       tags: vsftpd
+      when: vsftpd | default(True)
 
     - role: robertdebock.cron
       vars:

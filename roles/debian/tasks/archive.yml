@@ -27,44 +27,46 @@
     dest: "{{ debian_archive_repo_path }}/etc/ftpsync.conf"
     mode: '0644'
 
-- name: Set rsync module fact
-  ansible.builtin.set_fact:
-    debian_rsync_module:
-      name: debian
-      config: |
-        path = {{ debian_archive_to }}
-        comment = Debian
-        read only = yes
-        list = yes
+- name: Configure rsyncd
   tags: rsync
+  when: rsync | default(True)
+  block:
+    - name: Set rsync module fact
+      ansible.builtin.set_fact:
+        debian_rsync_module:
+          name: debian
+          config: |
+            path = {{ debian_archive_to }}
+            comment = Debian
+            read only = yes
+            list = yes
 
-# noqa: var-naming[no-role-prefix]
-- name: Append to common_rsync_modules
-  ansible.builtin.set_fact:
-    common_rsync_modules: "{{ common_rsync_modules + [debian_rsync_module] }}"
-  tags: rsync
+    # noqa: var-naming[no-role-prefix]
+    - name: Append to common_rsync_modules
+      ansible.builtin.set_fact:
+        common_rsync_modules: "{{ common_rsync_modules + [debian_rsync_module] }}"
 
-- name: Set cron schedule fact
-  ansible.builtin.set_fact:
-    debian_archive_schedule: "{{ debian_archive_schedule | ansible.builtin.split }}"
+- name: Configure crontab
   tags: cron
+  block:
+    - name: Set cron schedule fact
+      ansible.builtin.set_fact:
+        debian_archive_schedule: "{{ debian_archive_schedule | ansible.builtin.split }}"
 
-- name: Set cron job fact
-  ansible.builtin.set_fact:
-    debian_cron_job:
-      name: debian
-      minute: "{{ debian_archive_schedule[0] }}"
-      hour: "{{ debian_archive_schedule[1] }}"
-      day: "{{ debian_archive_schedule[2] }}"
-      month: "{{ debian_archive_schedule[3] }}"
-      weekday: "{{ debian_archive_schedule[4] }}"
-      job: "{{ debian_archive_job }}"
-      user: "{{ common_rsync_user }}"
-      state: present
-  tags: cron
+    - name: Set cron job fact
+      ansible.builtin.set_fact:
+        debian_cron_job:
+          name: debian
+          minute: "{{ debian_archive_schedule[0] }}"
+          hour: "{{ debian_archive_schedule[1] }}"
+          day: "{{ debian_archive_schedule[2] }}"
+          month: "{{ debian_archive_schedule[3] }}"
+          weekday: "{{ debian_archive_schedule[4] }}"
+          job: "{{ debian_archive_job }}"
+          user: "{{ common_rsync_user }}"
+          state: present
 
-# noqa: var-naming[no-role-prefix]
-- name: Append to common_cron_jobs
-  ansible.builtin.set_fact:
-    common_cron_jobs: "{{ common_cron_jobs + [debian_cron_job] }}"
-  tags: cron
+    # noqa: var-naming[no-role-prefix]
+    - name: Append to common_cron_jobs
+      ansible.builtin.set_fact:
+        common_cron_jobs: "{{ common_cron_jobs + [debian_cron_job] }}"
