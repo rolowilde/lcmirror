@@ -1,4 +1,9 @@
 ---
+- name: Install script dependencies
+  ansible.builtin.package:
+    name: "{{ debian_archive_packages }}"
+    state: present
+
 - name: "Clone archvsync repository : archive"
   ansible.builtin.git:
     repo: "{{ debian_archive_repo_git }}"
