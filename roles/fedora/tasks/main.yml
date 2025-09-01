@@ -1,0 +1,44 @@
+---
+- name: Install script dependencies
+  ansible.builtin.package:
+    name: "{{ fedora_packages }}"
+    state: present
+
+- name: Clone quick-fedora-mirror repository
+  ansible.builtin.git:
+    repo: "{{ fedora_repo_git }}"
+    version: "{{ fedora_repo_version }}"
+    dest: "{{ fedora_repo_path }}"
+
+- name: Create target directory
+  ansible.builtin.file:
+    path: "{{ fedora_destd }}"
+    owner: "{{ common_rsync_user }}"
+    group: "{{ common_rsync_user }}"
+    mode: '0755'
+    state: directory
+
+- name: Create log file
+  ansible.builtin.file:
+    path: "{{ fedora_logfile }}"
+    owner: "{{ common_rsync_user }}"
+    group: "{{ common_rsync_user }}"
+    mode: '0644'
+    state: touch
+
+- name: Template quick-fedora-mirror.conf
+  ansible.builtin.template:
+    src: quick-fedora-mirror.conf.j2
+    dest: "{{ fedora_repo_path }}/quick-fedora-mirror.conf"
+    mode: '0644'
+
+- name: Finalize mirror
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: mirror
+  vars:
+    common_mirror_name: fedora
+    common_mirror_rsync_path: "{{ fedora_destd }}"
+    common_mirror_rsync_comment: "{{ fedora_comment }}"
+    common_mirror_cron_expression: "{{ fedora_schedule }}"
+    common_mirror_cron_script: "{{ fedora_job }}"

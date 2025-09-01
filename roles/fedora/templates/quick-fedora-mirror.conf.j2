@@ -1,0 +1,75 @@
+{% if fedora_destd is defined %}
+DESTD={{ fedora_destd }}
+{% endif %}
+{% if fedora_timefile is defined %}
+TIMEFILE={{ fedora_timefile }}
+{% endif %}
+{% if fedora_remote is defined %}
+REMOTE={{ fedora_remote }}
+{% endif %}
+{% if fedora_master_module is defined %}
+MASTERMODULE={{ fedora_master_module }}
+{% endif %}
+{% if fedora_prebit_flip is defined %}
+PREBITFLIP={{ fedora_prebit_flip }}
+{% endif %}
+{% if fedora_mirror_buffet is defined %}
+MIRRORBUFFET={{ fedora_mirror_buffet }}
+{% endif %}
+{% if fedora_modules is defined %}
+MODULES=({{ fedora_modules | join(' ') }})
+{% endif %}
+{% if fedora_filterexp is defined %}
+FILTEREXP={{ fedora_filterexp }}
+{% endif %}
+{% if fedora_email_dest is defined %}
+EMAILDEST={{ fedora_email_dest }}
+{% endif %}
+{% if fedora_email_subject is defined %}
+EMAILSUBJECT={{ fedora_email_subject }}
+{% endif %}
+{% if fedora_verbose is defined %}
+VERBOSE={{ fedora_verbose }}
+{% endif %}
+{% if fedora_logjournal is defined %}
+LOGJOURNAL={{ fedora_logjournal }}
+{% endif %}
+{% if fedora_logfile is defined %}
+LOGFILE={{ fedora_logfile }}
+{% endif %}
+{% if fedora_logitems is defined %}
+LOGITEMS={{ fedora_logitems }}
+{% endif %}
+{% if fedora_rsync_timeout is defined %}
+RSYNCTIMEOUT={{ fedora_rsync_timeout }}
+{% endif %}
+{% if fedora_rsync_partialdirbug is defined %}
+RSYNC_PARTIAL_DIR_BUG={{ fedora_rsync_partialdirbug }}
+{% endif %}
+{% if fedora_warndelay is defined %}
+WARNDELAY={{ fedora_warndelay }}
+{% endif %}
+{% if fedora_maxretries is defined %}
+MAXRETRIES={{ fedora_maxretries }}
+{% endif %}
+{% if fedora_curl is defined %}
+CURL={{ fedora_curl }}
+{% endif %}
+{% if fedora_rsync is defined %}
+RSYNC={{ fedora_rsync }}
+{% endif %}
+{% if fedora_filelist is defined %}
+FILELIST=({{ fedora_filelist | join(' ') }})
+{% endif %}
+{% if fedora_extrafiles is defined %}
+EXTRAFILES=({{ fedora_extrafiles | join(' ') }})
+{% endif %}
+{% if fedora_rsync_opts is defined %}
+RSYNCOPTS=({{ fedora_rsync_opts | join(' ') }})
+{% endif %}
+{% if fedora_rsync_norecovery is defined %}
+NORSYNCRECOVERY={{ fedora_rsync_norecovery }}
+{% endif %}
+{% if fedora_keepdirtimes is defined %}
+KEEPDIRTIMES={{ fedora_keepdirtimes }}
+{% endif %}

@@ -1,0 +1,6 @@
+---
+fedora_packages: [zsh, curl, rsync, git]
+fedora_repo_git: https://pagure.io/forks/kruton/quick-fedora-mirror.git # PR with fixes
+fedora_repo_version: ee1f19fd449e6db65e164cd052141836712162e9
+fedora_repo_path: /opt/quick-fedora-mirror
+fedora_job: "{{ fedora_repo_path }}/quick-fedora-mirror"

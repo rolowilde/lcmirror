@@ -38,6 +38,10 @@
       tags: linuxmint
       when: linuxmint | default(True)
 
+    - role: fedora
+      tags: fedora
+      when: fedora | default(True)
+
     - role: maxhoesel.caddy.caddy_server
       tags: caddy
       when: caddy | default(True)

@@ -16,7 +16,7 @@ In order of implementation:
 | FreeBSD | mirrorsync | ✅ |
 | MX Linux | mirrorsync | ✅ (packages, iso) |
 | Linux Mint | mirrorsync | ✅ (packages, iso) |
-| Fedora | [quick-fedora-mirror](https://pagure.io/quick-fedora-mirror) | ⌛ |
+| Fedora | [quick-fedora-mirror](https://pagure.io/quick-fedora-mirror) | ✅ |
 
 ## Usage
 
