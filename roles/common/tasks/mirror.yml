@@ -30,6 +30,7 @@
 
 - name: "Configure crontab : {{ common_mirror_name }}"
   tags: cron
+  when: cron | default(True)
   block:
     - name: "Split cron expression : {{ common_mirror_name }}"
       ansible.builtin.set_fact:

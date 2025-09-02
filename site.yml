@@ -72,6 +72,7 @@
       vars:
         cron_jobs: "{{ common_cron_jobs | default([]) }}"
       tags: cron
+      when: cron | default(True)
   tasks:
     - name: Perform rsyncd tasks
       tags: rsyncd
