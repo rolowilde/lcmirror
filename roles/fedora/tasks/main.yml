@@ -29,7 +29,7 @@
 - name: Template quick-fedora-mirror.conf
   ansible.builtin.template:
     src: quick-fedora-mirror.conf.j2
-    dest: "{{ fedora_repo_path }}/quick-fedora-mirror.conf"
+    dest: "{{ fedora_config_file }}"
     mode: '0644'
 
 - name: Finalize mirror
@@ -41,4 +41,4 @@
     common_mirror_rsync_path: "{{ fedora_destd }}"
     common_mirror_rsync_comment: "{{ fedora_comment }}"
     common_mirror_cron_expression: "{{ fedora_schedule }}"
-    common_mirror_cron_script: "{{ fedora_job }}"
+    common_mirror_cron_script: "{{ fedora_job }} -c {{ fedora_config_file }}"
