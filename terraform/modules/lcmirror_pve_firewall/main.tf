@@ -12,6 +12,12 @@ resource "proxmox_virtual_environment_firewall_rules" "rules" {
   container_id = var.ct_id
   vm_id = var.vm_id
   rule {
+    type = "in"
+    action = "ACCEPT"
+    macro = "Ping"
+    iface = var.iface
+  }
+  rule {
     type   = "in"
     action = "ACCEPT"
     macro  = "FTP"
