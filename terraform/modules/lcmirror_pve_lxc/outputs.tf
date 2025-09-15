@@ -22,5 +22,5 @@ output "container" {
 
 output "fqdn" {
   description = "Fully Qualified Domain Name"
-  value = "${proxmox_virtual_environment_container.ct_mirror.hostname}.${data.proxmox_virtual_environment_dns.node_dns.domain}"
+  value = "${var.hostname}.${data.proxmox_virtual_environment_dns.node_dns.domain}"
 }
