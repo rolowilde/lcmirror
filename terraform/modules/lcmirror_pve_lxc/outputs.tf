@@ -16,5 +16,11 @@ output "public_key" {
 }
 
 output "container" {
+  description = "Container resource"
   value = proxmox_virtual_environment_container.ct_mirror
+}
+
+output "fqdn" {
+  description = "Fully Qualified Domain Name"
+  value = "${proxmox_virtual_environment_container.ct_mirror.hostname}.${data.proxmox_virtual_environment_dns.node_dns.domain}"
 }
