@@ -2,4 +2,9 @@
 .vscode/
 .idea/
 .vagrant/
+.terraform/
 venv/
+
+*.tfstate
+*.tfstate.backup
+*.tfvars
