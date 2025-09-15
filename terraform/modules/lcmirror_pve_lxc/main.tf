@@ -7,7 +7,7 @@ terraform {
   }
 }
 
-resource "proxmox_virtual_environment_container" "ct_mirror" {
+resource "proxmox_virtual_environment_container" "container" {
   depends_on = [
     proxmox_virtual_environment_download_file.debian_trixie_lxc_template,
     random_password.ct_root_password,

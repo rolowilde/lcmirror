@@ -17,7 +17,7 @@ output "public_key" {
 
 output "container" {
   description = "Container resource"
-  value = proxmox_virtual_environment_container.ct_mirror
+  value = proxmox_virtual_environment_container.container
 }
 
 output "fqdn" {
