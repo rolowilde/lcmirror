@@ -10,3 +10,4 @@ collections:
   - name: ansible.posix
   - name: community.general
   - name: maxhoesel.caddy
+  - name: cloud.terraform
