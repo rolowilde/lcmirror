@@ -6,3 +6,10 @@
   loop:
     - "{{ common_rsync_user }}"
     - "{{ common_vsftpd_user }}"
+
+# debian lxc does not have sudo installed by default
+# required for sudoers support in robertdebock.users
+- name: Ensure sudo is installed
+  ansible.builtin.package:
+    name: sudo
+    state: present
