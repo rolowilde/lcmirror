@@ -54,7 +54,7 @@ resource "proxmox_virtual_environment_container" "lcmirror" {
   }
 
   initialization {
-    hostname = "spulgs2"
+    hostname = "lcmirror"
 
     ip_config {
       ipv4 {
