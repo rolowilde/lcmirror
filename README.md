@@ -17,6 +17,8 @@ In order of implementation:
 | MX Linux   | mirrorsync                                                              | ✅ (packages, iso)                                |
 | Linux Mint | mirrorsync                                                              | ✅ (packages, iso)                                |
 | Fedora     | [quick-fedora-mirror](https://pagure.io/quick-fedora-mirror)            | ✅                                                |
+| openSUSE   | mirrorsync                                                              | ⏳                                                |
+| Gentoo     | mirrorsync                                                              | ⏳                                                |
 
 ## Usage
 
