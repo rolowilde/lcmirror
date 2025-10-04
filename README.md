@@ -20,6 +20,23 @@ In order of implementation:
 
 ## Usage
 
+### OpenTofu (Terraform) with Ansible
+
+Example root module `terraform.tf` is provided in the repository to provision an LXC container in Proxmox Virtual Environment. It assumes Debian 13 standard container template is available, ZFS local storage, `/tank/mirror` dataset as the container mountpoint, and that hostnames resolve under DNS search domain of the PVE node. At the time, *only* OpenTofu is supported due to its native encrypted state functionality.
+
+Root password and SSH keys are generated automatically and available through `tofu output`. Bind mounts require `root@pam` authentication as per `bpg/terraform` provider [documentation](https://github.com/bpg/terraform-provider-proxmox/blob/a514610afb6f0b35f6bcfb9366eaf565c35b76fd/docs/resources/virtual_environment_container.md#example-usage). Ansible hosts are created dynamically via the provider and then pulled from OpenTofu state by `cloud.terraform.terraform_provider` inventory plugin.
+
+Specify playbook vars in `terraform.tf` or as described in the following section.
+
+If an SSH agent is set up on the local machine, the generated private key can be piped to `ssh-add`. Provision with a one-liner:
+
+```shell
+ansible-galaxy install -r requirements.yml # if not installed
+tofu apply && tofu output -raw lcmirror_ssh_private_key | ssh-add - && ansible-playbook site.yml
+```
+
+### Ansible
+
 A fresh virtual machine or container is recommended to run this playbook on managed nodes; Debian 12-13 tested.
 
 On the control node:
@@ -31,10 +48,18 @@ On the control node:
     ```
 
 2. Create an inventory file with hosts.
+   1. This is not necessary when provisioning by the OpenTofu example.
+   2. Otherwise, specify hosts in the inventory as usual.
+   3. Only hosts in the **mirrors** group are targetted by the playbook.
+
 3. Configure hosts with vars provided in `example.yml`, as well as in roles' defaults.
-   1. Specify additional users, cron jobs, and rsync modules (if any) in `common_users`, `common_cron_jobs`, `common_rsync` respectively. Refer to [users](https://github.com/robertdebock/ansible-role-users/tree/bb7b2b743eded04b9f5a7727682b75cea5249a50?tab=readme-ov-file#example-playbook), [cron](https://github.com/robertdebock/ansible-role-cron/tree/8dc5dceeae3bfdeb9a37c76d0cd709fb40ea7267?tab=readme-ov-file#example-playbook), [rsync-server](https://github.com/infOpen/ansible-role-rsync-server/tree/18a2ba608f7e6fd712cedc3a77c14a0b5653e556?tab=readme-ov-file#manage-rsync-configuration) for object schemas.
-   2. Aforementioned lists are populated dynamically, depending on executed roles.
-   3. Caddy, the HTTP(S) server, will not be configured (but installed by default) unless vars are set. A basic Caddyfile is provided in the example.
+   1. Override defaults in `group_vars/mirrors.yml` for all hosts and `host_vars/*.yml` per host.
+   2. Specify additional users, cron jobs, and rsync modules (if any) in `common_users`, `common_cron_jobs`, `common_rsync` respectively. Refer to [users](https://github.com/robertdebock/ansible-role-users/tree/bb7b2b743eded04b9f5a7727682b75cea5249a50?tab=readme-ov-file#example-playbook), [cron](https://github.com/robertdebock/ansible-role-cron/tree/8dc5dceeae3bfdeb9a37c76d0cd709fb40ea7267?tab=readme-ov-file#example-playbook), [rsync-server](https://github.com/infOpen/ansible-role-rsync-server/tree/18a2ba608f7e6fd712cedc3a77c14a0b5653e556?tab=readme-ov-file#manage-rsync-configuration) for object schemas.
+   3. Aforementioned lists are populated dynamically, depending on executed roles.
+   4. Caddy, the HTTP(S) server, will not be configured (but installed by default) unless vars are set. A basic Caddyfile is provided in the example.
+   5. Set `rsyncd` and/or `vsftpd` to `false` if those services are not desired.
+   6. Set `update_reboot` to `false` if reboot handler is not desired.
+
 4. Run playbook:
 
     ```shell
