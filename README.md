@@ -8,15 +8,15 @@ Currently used at University of Latvia: [spulgs3.linuxcentrs.lv](https://spulgs3
 
 In order of implementation:
 
-| Name | Scripts | Implemented |
-| ---- | ------- | ----------- |
-| Arch Linux | mirrorsync | ✅ |
-| Debian | [archvsync](https://salsa.debian.org/mirror-team/archvsync), mirrorsync | ✅ (archive, cdimage) |
-| Ubuntu | [ubumirror](https://github.com/rolowilde/ubumirror) | ✅ (archive, cdimage, release, ports, cloudimage) |
-| FreeBSD | mirrorsync | ✅ |
-| MX Linux | mirrorsync | ✅ (packages, iso) |
-| Linux Mint | mirrorsync | ✅ (packages, iso) |
-| Fedora | [quick-fedora-mirror](https://pagure.io/quick-fedora-mirror) | ✅ |
+| Name       | Scripts                                                                 | Implemented                                      |
+| ---------- | ----------------------------------------------------------------------- | ------------------------------------------------ |
+| Arch Linux | mirrorsync                                                              | ✅                                                |
+| Debian     | [archvsync](https://salsa.debian.org/mirror-team/archvsync), mirrorsync | ✅ (archive, cdimage)                             |
+| Ubuntu     | [ubumirror](https://github.com/rolowilde/ubumirror)                     | ✅ (archive, cdimage, release, ports, cloudimage) |
+| FreeBSD    | mirrorsync                                                              | ✅                                                |
+| MX Linux   | mirrorsync                                                              | ✅ (packages, iso)                                |
+| Linux Mint | mirrorsync                                                              | ✅ (packages, iso)                                |
+| Fedora     | [quick-fedora-mirror](https://pagure.io/quick-fedora-mirror)            | ✅                                                |
 
 ## Usage
 
