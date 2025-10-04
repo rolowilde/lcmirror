@@ -3,7 +3,7 @@ fedora_destd: "{{ common_rsync_root }}/fedora"
 fedora_timefile: /tmp/quick-fedora-mirror
 fedora_remote: rsync://dl.fedoraproject.org
 fedora_master_module: fedora-buffet
-fedora_modules: [fedora-enchilada, fedora-epel]
+fedora_modules: [fedora-enchilada]
 fedora_logfile: /var/log/fedora.log
 fedora_comment: Fedora
 fedora_schedule: "{{ common_cron_expression }}"
