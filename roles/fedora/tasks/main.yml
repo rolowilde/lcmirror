@@ -10,14 +10,6 @@
     version: "{{ fedora_repo_version }}"
     dest: "{{ fedora_repo_path }}"
 
-- name: Create target directory
-  ansible.builtin.file:
-    path: "{{ fedora_destd }}"
-    owner: "{{ common_rsync_user }}"
-    group: "{{ common_rsync_user }}"
-    mode: '0755'
-    state: directory
-
 - name: Create log file
   ansible.builtin.file:
     path: "{{ fedora_logfile }}"
@@ -42,3 +34,36 @@
     common_mirror_rsync_comment: "{{ fedora_comment }}"
     common_mirror_cron_expression: "{{ fedora_schedule }}"
     common_mirror_cron_script: "{{ fedora_job }} -c {{ fedora_config_file }}"
+    # noqa: var-naming[no-role-prefix]
+    rsyncd: false
+
+- name: "Configure rsyncd : fedora"
+  tags: rsyncd
+  when: rsyncd | default(True)
+  block:
+    - name: "Set rsync module fact : fedora-enchilada"
+      ansible.builtin.set_fact:
+        fedora_rsync_module:
+          name: fedora
+          config: |
+            path = {{ common_rsync_root }}/fedora
+            comment = Fedora - The whole enchilada
+            read only = yes
+            list = yes
+      when: "'fedora-enchilada' in fedora_modules"
+
+    - name: "Set rsync module fact : fedora-epel"
+      ansible.builtin.set_fact:
+        fedora_epel_rsync_module:
+          name: fedora-epel
+          config: |
+            path = {{ common_rsync_root }}/epel
+            comment = Extra Packages for Enterprise Linux
+            read only = yes
+            list = yes
+      when: "'fedora-epel' in fedora_modules"
+
+    - name: "Append fedora modules to common_rsync_modules"
+      ansible.builtin.set_fact:
+        # noqa: var-naming[no-role-prefix]
+        common_rsync_modules: "{{ common_rsync_modules + [fedora_rsync_module | default({}), fedora_epel_rsync_module | default({})] }}"
