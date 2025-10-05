@@ -53,8 +53,8 @@
         rsync_server_user:
           name: "{{ common_rsync_user }}"
         rsync_default_global_config: |-
-          uid = {{ common_rsync_user }}
-          gid = {{ common_rsync_user }}
+          uid = 65534
+          gid = 65534
           log file = /var/log/rsync/rsyncd.log
         rsync_server_config_main:
           global: "{{ rsync_global_config | default(rsync_default_global_config) }}"
