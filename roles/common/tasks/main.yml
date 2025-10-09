@@ -1,11 +1,21 @@
 ---
-- name: Add system users if not in common_users
-  ansible.builtin.set_fact:
-    common_users: "{{ common_users + [common_rsync_default_user] }}"
-  when: (common_users | selectattr('name', 'match', item) | list | length) == 0
-  loop:
-    - "{{ common_rsync_user }}"
-    - "{{ common_vsftpd_user }}"
+- name: Create rsync user
+  ansible.builtin.user:
+    name: "{{ common_rsync_user }}"
+    shell: /usr/sbin/nologin
+    system: true
+    password_lock: true
+    create_home: true
+    home: "{{ common_rsync_root }}"
+
+- name: Create vsftpd user
+  ansible.builtin.user:
+    name: "{{ common_vsftpd_user }}"
+    shell: /usr/sbin/nologin
+    system: true
+    password_lock: true
+    create_home: true
+    home: "{{ common_vsftpd_root }}"
 
 # debian lxc does not have sudo installed by default
 # required for sudoers support in robertdebock.users
@@ -22,3 +32,4 @@
     enabled: false
     state: stopped
     masked: true
+  when: ansible_virtualization_type == 'lxc'

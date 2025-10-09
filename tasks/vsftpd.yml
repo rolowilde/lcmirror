@@ -1,0 +1,43 @@
+- name: Import vsftpd role
+  ansible.builtin.import_role:
+    name: robertdebock.vsftpd
+
+- name: Set vsftpd facts
+  ansible.builtin.set_fact:
+    vsftpd_userlist_file: /etc/vsftpd.user_list
+    vsftpd_files:
+      - vsftpd_xferlog_file
+      - vsftpd_banned_email_file
+      - vsftpd_chroot_list_file
+      - vsftpd_userlist_file
+
+- name: Create vsftpd directories
+  ansible.builtin.file:
+    path: "{{ lookup('ansible.builtin.vars', item) | ansible.builtin.dirname }}"
+    mode: '0755'
+    state: directory
+  loop: "{{ vsftpd_files }}"
+
+- name: Touch vsftpd files
+  ansible.builtin.file:
+    path: "{{ lookup('ansible.builtin.vars', item) }}"
+    mode: '0644'
+    state: touch
+  loop: "{{ vsftpd_files }}"
+
+- name: Create vsftpd files with content
+  ansible.builtin.copy:
+    content: "{{ lookup('ansible.builtin.vars', item[:-5]) }}" # same var without _file
+    dest: "{{ lookup('ansible.builtin.vars', item) }}"
+    mode: '0644'
+  loop: "{{ vsftpd_files }}"
+  notify: Restart vsftpd
+  when: lookup('ansible.builtin.vars', item[:-5]) | default('', true) | trim != ''
+
+- name: Symlink anonymous ftp root to rsync root
+  ansible.builtin.file:
+    src: "{{ common_rsync_root }}"
+    dest: "{{ common_vsftpd_root }}"
+    force: true
+    state: link
+  when: common_vsftpd_root is defined and common_rsync_root is defined

@@ -3,16 +3,10 @@
   hosts: mirrors
   become: true
   roles:
-    - role: common
-      tags: always
-
     - role: robertdebock.update
-      tags: update
-
-    - role: robertdebock.users
       vars:
-        users: "{{ common_users | default([]) }}"
-      tags: users
+        update_reboot: false
+      tags: update
 
     - role: archlinux
       tags: archlinux
@@ -46,81 +40,20 @@
       tags: caddy
       when: caddy | default(True)
 
-    - role: infOpen.rsync-server
-      vars:
-        rsync_server_group:
-          name: "{{ common_rsync_user }}"
-        rsync_server_user:
-          name: "{{ common_rsync_user }}"
-        rsync_default_global_config: |-
-          uid = 65534
-          gid = 65534
-          log file = /var/log/rsync/rsyncd.log
-        rsync_server_config_main:
-          global: "{{ rsync_global_config | default(rsync_default_global_config) }}"
-          modules: "{{ common_rsync_modules | default([]) }}"
-      tags: rsyncd
-      when: rsyncd | default(True)
-
-    - role: robertdebock.vsftpd
-      vars:
-        vsftpd_nopriv_user: "{{ common_vsftpd_user }}"
-      tags: vsftpd
-      when: vsftpd | default(True)
-
     - role: robertdebock.cron
       vars:
         cron_jobs: "{{ common_cron_jobs | default([]) }}"
       tags: cron
       when: cron | default(True)
   tasks:
-    - name: Perform rsyncd tasks
+    - name: Include rsyncd tasks
+      ansible.builtin.import_tasks:
+        file: tasks/rsyncd.yml
       tags: rsyncd
       when: rsyncd | default(True)
-      block:
-        - name: Enable and start rsyncd
-          ansible.builtin.service:
-            name: "{{ rsync_server_service.name }}" # from role
-            enabled: true
-            state: started
 
-    - name: Perform vsftpd tasks
+    - name: Include vsftpd tasks
+      ansible.builtin.import_tasks:
+        file: tasks/vsftpd.yml
       tags: vsftpd
       when: vsftpd | default(True)
-      vars:
-        vsftpd_userlist_file: /etc/vsftpd.user_list
-        vsftpd_files:
-          - vsftpd_xferlog_file
-          - vsftpd_banned_email_file
-          - vsftpd_chroot_list_file
-          - vsftpd_userlist_file
-      block:
-        - name: Create vsftpd directories
-          ansible.builtin.file:
-            path: "{{ lookup('ansible.builtin.vars', item) | ansible.builtin.dirname }}"
-            mode: '0755'
-            state: directory
-          loop: "{{ vsftpd_files }}"
-
-        - name: Touch vsftpd files
-          ansible.builtin.file:
-            path: "{{ lookup('ansible.builtin.vars', item) }}"
-            mode: '0644'
-            state: touch
-          loop: "{{ vsftpd_files }}"
-
-        - name: Create vsftpd files with content
-          ansible.builtin.copy:
-            content: "{{ lookup('ansible.builtin.vars', item[:-5]) }}" # same var without _file
-            dest: "{{ lookup('ansible.builtin.vars', item) }}"
-            mode: '0644'
-          loop: "{{ vsftpd_files }}"
-          notify: Restart vsftpd
-          when: lookup('ansible.builtin.vars', item[:-5]) | default('', true) | trim != ''
-
-        - name: Symlink anonymous ftp root to rsync root
-          ansible.builtin.file:
-            src: "{{ common_rsync_root }}"
-            dest: "{{ common_vsftpd_root }}"
-            force: true
-            state: link

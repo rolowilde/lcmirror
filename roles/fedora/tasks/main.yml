@@ -24,46 +24,41 @@
     dest: "{{ fedora_config_file }}"
     mode: '0644'
 
-- name: Finalize mirror
+- name: Finalize mirror (rsync)
   ansible.builtin.include_role:
     name: common
     tasks_from: mirror
   vars:
     common_mirror_name: fedora
-    common_mirror_rsync_path: "{{ fedora_destd }}"
+    common_mirror_rsync_path: "{{ fedora_destd }}/fedora"
     common_mirror_rsync_comment: "{{ fedora_comment }}"
+  when: "'fedora-enchilada' in fedora_modules"
+
+- name: Finalize mirror (rsync)
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: mirror
+  vars:
+    common_mirror_name: epel
+    common_mirror_rsync_path: "{{ fedora_destd }}/epel"
+    common_mirror_rsync_comment: "{{ fedora_epel_comment }}"
+  when: "'fedora-epel' in fedora_modules"
+
+- name: Finalize mirror (rsync)
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: mirror
+  vars:
+    common_mirror_name: fedora-secondary
+    common_mirror_rsync_path: "{{ fedora_destd }}/fedora-secondary"
+    common_mirror_rsync_comment: "{{ fedora_secondary_comment }}"
+  when: "'fedora-secondary' in fedora_modules"
+
+- name: Finalize mirror (cron)
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: mirror
+  vars:
+    common_mirror_name: fedora
     common_mirror_cron_expression: "{{ fedora_schedule }}"
     common_mirror_cron_script: "{{ fedora_job }} -c {{ fedora_config_file }}"
-    # noqa: var-naming[no-role-prefix]
-    rsyncd: false
-
-- name: "Configure rsyncd : fedora"
-  tags: rsyncd
-  when: rsyncd | default(True)
-  block:
-    - name: "Set rsync module fact : fedora-enchilada"
-      ansible.builtin.set_fact:
-        fedora_rsync_module:
-          name: fedora
-          config: |
-            path = {{ common_rsync_root }}/fedora
-            comment = Fedora - The whole enchilada
-            read only = yes
-            list = yes
-      when: "'fedora-enchilada' in fedora_modules"
-
-    - name: "Set rsync module fact : fedora-epel"
-      ansible.builtin.set_fact:
-        fedora_epel_rsync_module:
-          name: fedora-epel
-          config: |
-            path = {{ common_rsync_root }}/epel
-            comment = Extra Packages for Enterprise Linux
-            read only = yes
-            list = yes
-      when: "'fedora-epel' in fedora_modules"
-
-    - name: "Append fedora modules to common_rsync_modules"
-      ansible.builtin.set_fact:
-        # noqa: var-naming[no-role-prefix]
-        common_rsync_modules: "{{ common_rsync_modules + [fedora_rsync_module | default({}), fedora_epel_rsync_module | default({})] }}"

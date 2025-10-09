@@ -1,18 +1,9 @@
 ---
-- name: Assert required vars
-  ansible.builtin.assert:
-    that: item | default('', true) | trim != ''
-    quiet: true
-  loop:
-    - common_mirror_name
-    - common_mirror_rsync_path
-    - common_mirror_rsync_comment
-    - common_mirror_cron_expression
-    - common_mirror_cron_script
-
 - name: "Configure rsyncd : {{ common_mirror_name }}"
-  tags: rsyncd
-  when: rsyncd | default(True)
+  when:
+    - common_mirror_rsync_name is defined or common_mirror_name is defined
+    - common_mirror_rsync_path is defined
+    - common_mirror_rsync_comment is defined
   block:
     - name: "Set rsync module fact : {{ common_mirror_name }}"
       ansible.builtin.set_fact:
@@ -29,8 +20,10 @@
         common_rsync_modules: "{{ common_rsync_modules + [common_mirror_rsync_module] }}"
 
 - name: "Configure crontab : {{ common_mirror_name }}"
-  tags: cron
-  when: cron | default(True)
+  when:
+    - common_mirror_name is defined
+    - common_mirror_cron_expression is defined
+    - common_mirror_cron_script is defined
   block:
     - name: "Split cron expression : {{ common_mirror_name }}"
       ansible.builtin.set_fact:

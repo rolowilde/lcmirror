@@ -1,7 +1,6 @@
 ---
 roles:
   - name: robertdebock.update
-  - name: robertdebock.users
   - name: robertdebock.cron
   - name: robertdebock.vsftpd
   - name: infOpen.rsync-server
