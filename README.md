@@ -2,7 +2,7 @@
 
 Free and Open Source Software repository mirror deployment solution. This Ansible playbook installs sync scripts and configures a web server (Caddy), crontab, vsftpd, and rsyncd.
 
-Currently used at University of Latvia: [spulgs3.linuxcentrs.lv](https://spulgs3.linuxcentrs.lv/)
+Used in production at University of Latvia: [ftp.linux.edu.lv](https://ftp.linux.edu.lv/)
 
 ## Mirrored repositories
 
@@ -56,7 +56,7 @@ On the control node:
 
 3. Configure hosts with vars provided in `example.yml`, as well as in roles' defaults.
    1. Override defaults in `group_vars/mirrors.yml` for all hosts and `host_vars/*.yml` per host.
-   2. Specify additional users, cron jobs, and rsync modules (if any) in `common_users`, `common_cron_jobs`, `common_rsync` respectively. Refer to [users](https://github.com/robertdebock/ansible-role-users/tree/bb7b2b743eded04b9f5a7727682b75cea5249a50?tab=readme-ov-file#example-playbook), [cron](https://github.com/robertdebock/ansible-role-cron/tree/8dc5dceeae3bfdeb9a37c76d0cd709fb40ea7267?tab=readme-ov-file#example-playbook), [rsync-server](https://github.com/infOpen/ansible-role-rsync-server/tree/18a2ba608f7e6fd712cedc3a77c14a0b5653e556?tab=readme-ov-file#manage-rsync-configuration) for object schemas.
+   2. Specify additional cron jobs and rsync modules (if any) in `common_cron_jobs` and `common_rsync` respectively. Refer to [users](https://github.com/robertdebock/ansible-role-users/tree/bb7b2b743eded04b9f5a7727682b75cea5249a50?tab=readme-ov-file#example-playbook), [cron](https://github.com/robertdebock/ansible-role-cron/tree/8dc5dceeae3bfdeb9a37c76d0cd709fb40ea7267?tab=readme-ov-file#example-playbook), [rsync-server](https://github.com/infOpen/ansible-role-rsync-server/tree/18a2ba608f7e6fd712cedc3a77c14a0b5653e556?tab=readme-ov-file#manage-rsync-configuration) for object schemas.
    3. Aforementioned lists are populated dynamically, depending on executed roles.
    4. Caddy, the HTTP(S) server, will not be configured (but installed by default) unless vars are set. A basic Caddyfile is provided in the example.
    5. Set `rsyncd` and/or `vsftpd` to `false` if those services are not desired.
