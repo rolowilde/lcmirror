@@ -36,16 +36,18 @@
       tags: fedora
       when: fedora | default(True)
 
-    - role: maxhoesel.caddy.caddy_server
-      tags: caddy
-      when: caddy | default(True)
-
     - role: robertdebock.cron
       vars:
         cron_jobs: "{{ common_cron_jobs | default([]) }}"
       tags: cron
       when: cron | default(True)
   tasks:
+    - name: Include caddy tasks
+      ansible.builtin.import_tasks:
+        file: tasks/caddy.yml
+      tags: caddy
+      when: caddy | default(True)
+
     - name: Include rsyncd tasks
       ansible.builtin.import_tasks:
         file: tasks/rsyncd.yml
