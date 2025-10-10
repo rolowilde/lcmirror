@@ -1,0 +1,11 @@
+---
+- name: Deploy and reload configs
+  hosts: mirrors
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Import config_caddyfile.yml
+      ansible.builtin.import_role:
+        name: maxhoesel.caddy.caddy_server
+        tasks_from: config_caddyfile
+      when: caddy | default(True)
