@@ -8,3 +8,5 @@ mirrors:
       ansible_host: 192.0.2.17
     mirror3:
       ansible_host: 192.0.2.29
+      # if not root or not using passwordless sudo
+      ansible_become: true
