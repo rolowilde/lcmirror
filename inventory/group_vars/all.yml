@@ -17,5 +17,7 @@ lcmirror_root: /srv/mirror
 
 caddy_config_mode: Caddyfile
 caddy_caddyfile: |
-  root * {{ lcmirror_root }}
-  file_server browse
+  http:// {
+    root * {{ lcmirror_root }}
+    file_server browse
+  }
