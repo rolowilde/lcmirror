@@ -1,0 +1,14 @@
+---
+- name: Create mirror root
+  ansible.builtin.file:
+    path: "{{ lcmirror_root }}"
+    state: directory
+    mode: '0755'
+
+- name: Create mirror user
+  ansible.builtin.user:
+    name: "{{ lcmirror_user }}"
+    shell: /usr/sbin/nologin
+    system: true
+    password_lock: true
+    home: "{{ lcmirror_root }}"

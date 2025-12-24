@@ -1,0 +1,24 @@
+---
+- name: Install rsync
+  ansible.builtin.package:
+    name: rsync
+
+- name: Configure rsyncd
+  ansible.builtin.template:
+    src: rsyncd.conf.j2
+    dest: /etc/rsyncd.conf
+    mode: '0644'
+  notify:
+    - Restart rsyncd
+
+- name: Touch rsyncd log file
+  ansible.builtin.file:
+    path: "{{ rsyncd_log_file }}"
+    mode: '0644'
+    state: touch
+
+- name: Create motd file
+  ansible.builtin.copy:
+    content: "{{ rsyncd_motd }}"
+    dest: "{{ rsyncd_motd_file }}"
+    mode: '0644'

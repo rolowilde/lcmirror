@@ -1,0 +1,10 @@
+# https://docs.ansible.com/projects/ansible/latest/getting_started/get_started_inventory.html
+---
+mirrors:
+  hosts:
+    mirror1:
+      ansible_host: 192.0.2.12
+    mirror2:
+      ansible_host: 192.0.2.17
+    mirror3:
+      ansible_host: 192.0.2.29

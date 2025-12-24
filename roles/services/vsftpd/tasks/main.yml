@@ -1,0 +1,24 @@
+---
+- name: Install vsftpd
+  ansible.builtin.package:
+    name: vsftpd
+
+- name: Configure vsftpd
+  ansible.builtin.template:
+    src: vsftpd.conf.j2
+    dest: /etc/vsftpd.conf
+    mode: '0644'
+  notify:
+    - Restart vsftpd
+
+- name: Touch xferlog
+  ansible.builtin.file:
+    path: "{{ vsftpd_xferlog_file }}"
+    mode: '0644'
+    state: touch
+
+- name: Start and enable vsftpd
+  ansible.builtin.service:
+    name: vsftpd
+    state: started
+    enabled: true

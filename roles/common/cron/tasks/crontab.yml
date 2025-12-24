@@ -1,0 +1,23 @@
+---
+- name: Assert variables
+  ansible.builtin.assert:
+    that:
+      - cron_name is defined
+      - cron_time is defined
+      - cron_job is defined
+
+- name: "Split cron expression : {{ cron_name }}"
+  ansible.builtin.set_fact:
+    cron_schedule: "{{ cron_time | ansible.builtin.split }}"
+
+- name: "Schedule cron job : {{ cron_name }}"
+  ansible.builtin.cron:
+    name: "{{ cron_name }}"
+    minute: "{{ cron_schedule[0] }}"
+    hour: "{{ cron_schedule[1] }}"
+    day: "{{ cron_schedule[2] }}"
+    month: "{{ cron_schedule[3] }}"
+    weekday: "{{ cron_schedule[4] }}"
+    job: "{{ cron_job }}"
+    user: "{{ lcmirror_user }}"
+    state: present

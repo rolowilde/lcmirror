@@ -1,0 +1,11 @@
+---
+- name: Install cron
+  ansible.builtin.package:
+    name: cron
+    state: present
+
+- name: Start and enable cron
+  ansible.builtin.service:
+    name: cron
+    state: started
+    enabled: true

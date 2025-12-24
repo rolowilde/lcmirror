@@ -1,0 +1,5 @@
+---
+- name: Configure rsync daemon
+  hosts: mirrors
+  roles:
+    - role: rsyncd

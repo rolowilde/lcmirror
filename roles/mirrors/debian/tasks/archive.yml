@@ -1,0 +1,52 @@
+---
+- name: Install script dependencies
+  ansible.builtin.package:
+    name: "{{ debian_archive_packages }}"
+    state: present
+
+- name: "Clone archvsync repository : archive"
+  ansible.builtin.git:
+    repo: "{{ debian_archive_repo_git }}"
+    version: "{{ debian_archive_repo_version }}"
+    dest: "{{ debian_archive_repo_path }}"
+
+- name: "Create target directory : archive"
+  ansible.builtin.file:
+    path: "{{ debian_archive_to }}"
+    owner: "{{ lcmirror_user }}"
+    group: "{{ lcmirror_user }}"
+    mode: '0755'
+    state: directory
+
+- name: "Create log directory : archive"
+  ansible.builtin.file:
+    path: "{{ debian_archive_logdir }}"
+    owner: "{{ lcmirror_user }}"
+    group: "{{ lcmirror_user }}"
+    mode: '0755'
+    state: directory
+
+- name: "Template ftpsync.conf : archive"
+  ansible.builtin.template:
+    src: ftpsync.conf.j2
+    dest: "{{ debian_archive_repo_path }}/etc/ftpsync.conf"
+    mode: '0644'
+
+- name: "Import cron role : archive"
+  ansible.builtin.import_role:
+    name: cron
+    tasks_from: crontab
+  vars:
+    cron_name: debian-archive
+    cron_time: "{{ debian_archive_schedule }}"
+    cron_job: "{{ debian_archive_job }}"
+
+- name: "Import rsyncd role : archive"
+  ansible.builtin.import_role:
+    name: rsyncd
+    tasks_from: module
+  vars:
+    rsyncd_name: debian-archive
+    rsyncd_path: "{{ debian_archive_to }}"
+    rsyncd_comment: "{{ debian_archive_comment }}"
+  when: rsyncd | default(True)

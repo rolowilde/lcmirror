@@ -1,0 +1,45 @@
+---
+- name: Install script dependencies
+  ansible.builtin.package:
+    name: "{{ fedora_packages }}"
+    state: present
+
+- name: Clone quick-fedora-mirror repository
+  ansible.builtin.git:
+    repo: "{{ fedora_repo_git }}"
+    version: "{{ fedora_repo_version }}"
+    dest: "{{ fedora_repo_path }}"
+
+- name: Create log file
+  ansible.builtin.file:
+    path: "{{ fedora_logfile }}"
+    owner: "{{ lcmirror_user }}"
+    group: "{{ lcmirror_user }}"
+    mode: '0644'
+    state: touch
+
+- name: Template quick-fedora-mirror.conf
+  ansible.builtin.template:
+    src: quick-fedora-mirror.conf.j2
+    dest: "{{ fedora_config_file }}"
+    mode: '0644'
+
+- name: Import cron role
+  ansible.builtin.import_role:
+    name: cron
+    tasks_from: crontab
+  vars:
+    cron_name: fedora
+    cron_time: "{{ fedora_schedule }}"
+    cron_job: "{{ fedora_job }} -c {{ fedora_config_file }}"
+
+- name: "Include rsyncd role : {{ item.key }}"
+  ansible.builtin.include_role:
+    name: rsyncd
+    tasks_from: module
+  vars:
+    rsyncd_name: "{{ item.key }}"
+    rsyncd_path: "{{ item.value.path }}"
+    rsyncd_comment: "{{ item.value.comment }}"
+  loop: "{{ fedora_rsyncd_modules | ansible.builtin.dict2items }}"
+  when: rsyncd | default(True) and item.key in fedora_modules

@@ -1,0 +1,6 @@
+{{ ansible_managed | comment }}
+read only = yes
+syslog facility = local5
+log file = {{ rsyncd_log_file }}
+motd file = {{ rsyncd_motd_file }}
+pid file = {{ rsyncd_pid_file }}

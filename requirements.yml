@@ -1,12 +1,4 @@
 ---
-roles:
-  - name: robertdebock.update
-  - name: robertdebock.cron
-  - name: robertdebock.vsftpd
-  - name: infOpen.rsync-server
-
 collections:
-  - name: ansible.posix
-  - name: community.general
   - name: maxhoesel.caddy
   - name: cloud.terraform

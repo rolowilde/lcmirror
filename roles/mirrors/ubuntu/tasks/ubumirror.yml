@@ -1,0 +1,39 @@
+---
+- name: "Set facts : {{ ubumirror }}"
+  ansible.builtin.set_fact:
+    ubuntu_definition:
+      dir: "{{ lookup('ansible.builtin.vars', 'ubuntu_' + ubumirror + '_dir') }}"
+      script: "{{ ubuntu_repo_path }}/ubu{{ ubumirror }}"
+      schedule: "{{ lookup('ansible.builtin.vars', 'ubuntu_' + ubumirror + '_schedule', default=lcmirror_cron_noop) }}"
+      comment: "{{ lookup('ansible.builtin.vars', 'ubuntu_' + ubumirror + '_comment') }}"
+
+- name: "Output ubumirror definition : {{ ubumirror }}"
+  ansible.builtin.debug:
+    var: ubuntu_definition
+
+- name: "Create dir : {{ ubumirror }}"
+  ansible.builtin.file:
+    path: "{{ ubuntu_definition.dir }}"
+    owner: "{{ lcmirror_user }}"
+    group: "{{ lcmirror_user }}"
+    mode: '0755'
+    state: directory
+
+- name: "Import cron role : {{ ubumirror }}"
+  ansible.builtin.import_role:
+    name: cron
+    tasks_from: crontab
+  vars:
+    cron_name: "ubuntu-{{ ubumirror }}"
+    cron_time: "{{ ubuntu_definition.schedule }}"
+    cron_job: "{{ ubuntu_definition.script }}"
+
+- name: "Import rsyncd role : {{ ubumirror }}"
+  ansible.builtin.import_role:
+    name: rsyncd
+    tasks_from: module
+  vars:
+    rsyncd_name: "{{ 'ubuntu-' + ubumirror if ubumirror != 'archive' else 'ubuntu' }}"
+    rsyncd_path: "{{ ubuntu_definition.dir }}"
+    rsyncd_comment: "{{ ubuntu_definition.comment }}"
+  when: rsyncd | default(True)

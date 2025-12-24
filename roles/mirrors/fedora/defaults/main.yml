@@ -1,0 +1,12 @@
+---
+fedora_destd: "{{ lcmirror_root }}"
+fedora_timefile: /tmp/quick-fedora-mirror
+fedora_remote: rsync://dl.fedoraproject.org
+fedora_master_module: fedora-buffet
+fedora_modules: [fedora-enchilada, fedora-epel]
+fedora_logfile: /var/log/fedora.log
+fedora_schedule: "{{ lcmirror_cron_noop }}"
+
+fedora_comment: Fedora - The whole enchilada
+fedora_epel_comment: Extra Packages for Enterprise Linux
+fedora_secondary_comment: Fedora Secondary Arches

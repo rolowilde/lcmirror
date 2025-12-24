@@ -1,0 +1,15 @@
+---
+- name: Configure web server
+  hosts: mirrors
+  pre_tasks:
+    # prevents lxc from hanging on
+    # "maxhoesel.caddy.caddy_server : Caddy is installed"
+    - name: Disable and mask systemd-networkd-wait-online
+      ansible.builtin.systemd:
+        name: systemd-networkd-wait-online.service
+        enabled: false
+        state: stopped
+        masked: true
+      when: ansible_virtualization_type == 'lxc'
+  roles:
+    - role: maxhoesel.caddy.caddy_server

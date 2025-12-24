@@ -1,0 +1,79 @@
+---
+- name: Assert mirrorsync_name is not empty
+  ansible.builtin.assert:
+    that: mirrorsync_name | default('', true) | trim != ''
+
+- name: Set mirrorsync_sanitized_name fact
+  ansible.builtin.set_fact:
+    mirrorsync_sanitized_name: "{{ mirrorsync_name | replace('_', '-') }}"
+
+- name: "Set mirrorsync definition : {{ mirrorsync_sanitized_name }}"
+  ansible.builtin.set_fact:
+    mirrorsync_definition:
+      packages: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_packages', default=['bash', 'curl', 'rsync']) }}"
+      script: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_script', default='/usr/local/bin/mirrorsync-' + mirrorsync_sanitized_name) }}"
+      target: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_target', default=lcmirror_root + '/' + mirrorsync_sanitized_name) }}"
+      lock: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_lock', default='/tmp/mirrorsync-' + mirrorsync_sanitized_name + '.lck') }}"
+      source_url: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_source_url') }}"
+      lastupdate_url: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_lastupdate_url', default='') }}"
+      lastupdate_file: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_lastupdate_file', default='') }}"
+      logdir: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_logdir', default='/var/log/' + mirrorsync_sanitized_name) }}"
+      logfile: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_logfile', default='mirrorsync.log') }}"
+      logcycle: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_logcycle', default=7) }}"
+      timeout: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_timeout', default=600) }}"
+      contimeout: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_contimeout', default=60) }}"
+      rsync_options: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_rsync_options', default=[]) }}"
+      prescript: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_prescript', default='') }}"
+      postscript: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_postscript', default='') }}"
+      schedule: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_schedule', default=lcmirror_cron_noop) }}"
+      comment: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_comment', default='') }}"
+
+- name: "Output mirrorsync definition : {{ mirrorsync_sanitized_name }}"
+  ansible.builtin.debug:
+    var: mirrorsync_definition
+
+- name: "Install packages : {{ mirrorsync_sanitized_name }}"
+  ansible.builtin.package:
+    name: "{{ mirrorsync_definition.packages }}"
+    state: present
+
+- name: "Create target directory : {{ mirrorsync_sanitized_name }}"
+  ansible.builtin.file:
+    path: "{{ mirrorsync_definition.target }}"
+    owner: "{{ lcmirror_user }}"
+    group: "{{ lcmirror_user }}"
+    mode: '0755'
+    state: directory
+
+- name: "Create log directory : {{ mirrorsync_sanitized_name }}"
+  ansible.builtin.file:
+    path: "{{ mirrorsync_definition.logdir }}"
+    owner: "{{ lcmirror_user }}"
+    group: "{{ lcmirror_user }}"
+    mode: '0755'
+    state: directory
+
+- name: "Template mirrorsync script : {{ mirrorsync_sanitized_name }}"
+  ansible.builtin.template:
+    src: mirrorsync.j2
+    dest: "{{ mirrorsync_definition.script }}"
+    mode: '0755'
+
+- name: "Import cron role : {{ mirrorsync_sanitized_name }}"
+  ansible.builtin.import_role:
+    name: cron
+    tasks_from: crontab
+  vars:
+    cron_name: "{{ mirrorsync_sanitized_name }}"
+    cron_time: "{{ mirrorsync_definition.schedule }}"
+    cron_job: "{{ mirrorsync_definition.script }}"
+
+- name: "Import rsyncd role : {{ mirrorsync_sanitized_name }}"
+  ansible.builtin.import_role:
+    name: rsyncd
+    tasks_from: module
+  vars:
+    rsyncd_name: "{{ mirrorsync_sanitized_name }}"
+    rsyncd_path: "{{ mirrorsync_definition.target }}"
+    rsyncd_comment: "{{ mirrorsync_definition.comment }}"
+  when: rsyncd | default(True)

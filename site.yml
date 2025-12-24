@@ -1,61 +1,15 @@
 ---
-- name: Configure a repository mirror server
-  hosts: mirrors
-  become: true
-  roles:
-    - role: robertdebock.update
-      vars:
-        update_reboot: false
-      tags: update
+- name: Import rsyncd playbook
+  ansible.builtin.import_playbook: playbooks/rsyncd.yml
+  when: rsyncd | default(True)
 
-    - role: archlinux
-      tags: archlinux
-      when: archlinux | default(True)
+- name: Import mirrors playbook
+  ansible.builtin.import_playbook: playbooks/mirrors.yml
 
-    - role: debian
-      tags: debian
-      when: debian | default(True)
+- name: Import caddy playbook
+  ansible.builtin.import_playbook: playbooks/caddy.yml
+  when: caddy | default(true)
 
-    - role: ubuntu
-      tags: ubuntu
-      when: ubuntu | default(True)
-
-    - role: freebsd
-      tags: freebsd
-      when: freebsd | default(True)
-
-    - role: mxlinux
-      tags: mxlinux
-      when: mxlinux | default(True)
-
-    - role: linuxmint
-      tags: linuxmint
-      when: linuxmint | default(True)
-
-    - role: fedora
-      tags: fedora
-      when: fedora | default(True)
-
-    - role: robertdebock.cron
-      vars:
-        cron_jobs: "{{ common_cron_jobs | default([]) }}"
-      tags: cron
-      when: cron | default(True)
-  tasks:
-    - name: Include caddy tasks
-      ansible.builtin.import_tasks:
-        file: tasks/caddy.yml
-      tags: caddy
-      when: caddy | default(True)
-
-    - name: Include rsyncd tasks
-      ansible.builtin.import_tasks:
-        file: tasks/rsyncd.yml
-      tags: rsyncd
-      when: rsyncd | default(True)
-
-    - name: Include vsftpd tasks
-      ansible.builtin.import_tasks:
-        file: tasks/vsftpd.yml
-      tags: vsftpd
-      when: vsftpd | default(True)
+- name: Import vsftpd playbook
+  ansible.builtin.import_playbook: playbooks/vsftpd.yml
+  when: vsftpd | default(true)

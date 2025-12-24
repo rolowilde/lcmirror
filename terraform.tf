@@ -37,7 +37,7 @@ terraform {
 }
 
 locals {
-  rsync_root    = "/srv/mirror"
+  mirror_root    = "/srv/mirror"
 }
 
 resource "proxmox_virtual_environment_container" "lcmirror" {
@@ -86,7 +86,7 @@ resource "proxmox_virtual_environment_container" "lcmirror" {
 
   mount_point {
     # bind mount, *requires* root@pam authentication
-    path   = local.rsync_root
+    path   = local.mirror_root
     volume = "/tank/mirror"
   }
 
@@ -153,7 +153,7 @@ resource "ansible_host" "lcmirror" {
   variables = {
     ansible_user           = "root"
     ansible_ssh_extra_args = "-o StrictHostKeyChecking=no"
-    common_rsync_root      = local.rsync_root
+    lcmirror_root      = local.mirror_root
   }
 }
 

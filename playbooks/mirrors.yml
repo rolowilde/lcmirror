@@ -1,0 +1,34 @@
+---
+- name: Configure repository mirroring
+  hosts: mirrors
+  roles:
+    - role: cron
+      tags: cron
+
+    - role: archlinux
+      tags: archlinux
+      when: archlinux | default(True)
+
+    - role: debian
+      tags: debian
+      when: debian | default(True)
+
+    - role: ubuntu
+      tags: ubuntu
+      when: ubuntu | default(True)
+
+    - role: freebsd
+      tags: freebsd
+      when: freebsd | default(True)
+
+    - role: mxlinux
+      tags: mxlinux
+      when: mxlinux | default(True)
+
+    - role: linuxmint
+      tags: linuxmint
+      when: linuxmint | default(True)
+
+    - role: fedora
+      tags: fedora
+      when: fedora | default(True)
