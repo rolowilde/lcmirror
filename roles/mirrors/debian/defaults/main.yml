@@ -2,7 +2,7 @@
 debian_archive: true
 debian_archive_to: "{{ lcmirror_root }}/debian"
 debian_archive_mirrorname: "{{ ansible_fqdn }}"
-debian_archive_rsync_host: mirror.accum.se
+debian_archive_rsync_host: ftp.acc.umu.se
 debian_archive_rsync_path: debian
 debian_archive_logdir: /var/log/debian
 debian_archive_comment: Debian Archive
