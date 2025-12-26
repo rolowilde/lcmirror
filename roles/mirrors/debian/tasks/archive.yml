@@ -46,7 +46,7 @@
     name: rsyncd
     tasks_from: module
   vars:
-    rsyncd_name: debian-archive
+    rsyncd_name: debian
     rsyncd_path: "{{ debian_archive_to }}"
     rsyncd_comment: "{{ debian_archive_comment }}"
   when: rsyncd | default(True)
