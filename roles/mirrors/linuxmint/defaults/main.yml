@@ -1,5 +1,6 @@
 ---
 linuxmint_packages: true
+linuxmint_packages_dirname: linuxmint
 linuxmint_packages_source_url: rsync://rsync-packages.linuxmint.com/packages
 linuxmint_packages_logdir: /var/log/linuxmint
 linuxmint_packages_logfile: mirrorsync-packages.log

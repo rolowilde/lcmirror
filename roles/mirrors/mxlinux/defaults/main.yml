@@ -1,5 +1,6 @@
 ---
 mxlinux_packages: true
+mxlinux_packages_dirname: mxlinux
 mxlinux_packages_source_url: rsync://mirror.accum.se/mirror/mxlinux.org/packages/
 mxlinux_packages_logdir: /var/log/mxlinux
 mxlinux_packages_logfile: mirrorsync-packages.log
