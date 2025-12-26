@@ -1,5 +1,5 @@
 ---
-- name: "Set facts : {{ ubumirror }}"
+- name: "Set ubuntu_definition fact : {{ ubumirror }}"
   ansible.builtin.set_fact:
     ubuntu_definition:
       dir: "{{ lookup('ansible.builtin.vars', 'ubuntu_' + ubumirror + '_dir') }}"
