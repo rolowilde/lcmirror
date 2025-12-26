@@ -9,9 +9,10 @@ debian_archive_comment: Debian Archive
 debian_archive_schedule: "{{ lcmirror_cron_noop }}"
 
 debian_cd: true
+debian_cd_mirrorname: "{{ ansible_fqdn }}"
 debian_cd_logdir: /var/log/debian
 debian_cd_source_url: rsync://cdimage.debian.org/debian-cd/
 debian_cd_lastupdate_url: https://cdimage.debian.org/debian-cd/project/trace/cdimage.debian.org
-debian_cd_lastupdate_file: "$TARGET/project/trace/{{ ansible_fqdn }}"
+debian_cd_lastupdate_file: "$TARGET/project/trace/{{ debian_cd_mirrorname }}"
 debian_cd_postscript: curl --clobber -Lo "$LASTUPDATE_FILE" "$LASTUPDATE_URL" >/dev/null
 debian_cd_comment: Debian CD images
