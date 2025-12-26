@@ -7,12 +7,12 @@
   ansible.builtin.set_fact:
     mirrorsync_sanitized_name: "{{ mirrorsync_name | replace('_', '-') }}"
 
-- name: "Set mirrorsync definition : {{ mirrorsync_sanitized_name }}"
+- name: "Set mirrorsync_definition fact : {{ mirrorsync_sanitized_name }}"
   ansible.builtin.set_fact:
     mirrorsync_definition:
       packages: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_packages', default=['bash', 'curl', 'rsync']) }}"
       script: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_script', default='/usr/local/bin/mirrorsync-' + mirrorsync_sanitized_name) }}"
-      target: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_target', default=lcmirror_root + '/' + mirrorsync_sanitized_name) }}"
+      dirname: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_dirname', default=mirrorsync_sanitized_name) }}"
       lock: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_lock', default='/tmp/mirrorsync-' + mirrorsync_sanitized_name + '.lck') }}"
       source_url: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_source_url') }}"
       lastupdate_url: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_lastupdate_url', default='') }}"
@@ -28,6 +28,10 @@
       schedule: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_schedule', default=lcmirror_cron_noop) }}"
       comment: "{{ lookup('ansible.builtin.vars', mirrorsync_name + '_comment', default='') }}"
 
+- name: "Set mirrorsync_target fact : {{ mirrorsync_sanitized_name }}"
+  ansible.builtin.set_fact:
+    mirrorsync_target: "{{ lcmirror_root }}/{{ mirrorsync_definition.dirname }}"
+
 - name: "Output mirrorsync definition : {{ mirrorsync_sanitized_name }}"
   ansible.builtin.debug:
     var: mirrorsync_definition
@@ -39,7 +43,7 @@
 
 - name: "Create target directory : {{ mirrorsync_sanitized_name }}"
   ansible.builtin.file:
-    path: "{{ mirrorsync_definition.target }}"
+    path: "{{ mirrorsync_target }}"
     owner: "{{ lcmirror_user }}"
     group: "{{ lcmirror_user }}"
     mode: '0755'
@@ -73,7 +77,7 @@
     name: rsyncd
     tasks_from: module
   vars:
-    rsyncd_name: "{{ mirrorsync_sanitized_name }}"
-    rsyncd_path: "{{ mirrorsync_definition.target }}"
+    rsyncd_name: "{{ mirrorsync_definition.dirname }}"
+    rsyncd_path: "{{ mirrorsync_target }}"
     rsyncd_comment: "{{ mirrorsync_definition.comment }}"
   when: rsyncd | default(True)
