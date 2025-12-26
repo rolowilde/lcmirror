@@ -19,7 +19,7 @@
     mode: '0755'
     state: directory
 
-- name: "Import cron role : {{ ubumirror }}"
+- name: Import cron role
   ansible.builtin.import_role:
     name: cron
     tasks_from: crontab
@@ -28,7 +28,7 @@
     cron_time: "{{ ubuntu_definition.schedule }}"
     cron_job: "{{ ubuntu_definition.script }}"
 
-- name: "Import rsyncd role : {{ ubumirror }}"
+- name: Import rsyncd role
   ansible.builtin.import_role:
     name: rsyncd
     tasks_from: module

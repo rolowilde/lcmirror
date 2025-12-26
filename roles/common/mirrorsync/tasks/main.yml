@@ -63,7 +63,7 @@
     dest: "{{ mirrorsync_definition.script }}"
     mode: '0755'
 
-- name: "Import cron role : {{ mirrorsync_sanitized_name }}"
+- name: Import cron role
   ansible.builtin.import_role:
     name: cron
     tasks_from: crontab
@@ -72,7 +72,7 @@
     cron_time: "{{ mirrorsync_definition.schedule }}"
     cron_job: "{{ mirrorsync_definition.script }}"
 
-- name: "Import rsyncd role : {{ mirrorsync_sanitized_name }}"
+- name: Import rsyncd role
   ansible.builtin.import_role:
     name: rsyncd
     tasks_from: module

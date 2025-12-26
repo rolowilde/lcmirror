@@ -33,7 +33,7 @@
     cron_time: "{{ fedora_schedule }}"
     cron_job: "{{ fedora_job }} -c {{ fedora_config_file }}"
 
-- name: "Include rsyncd role : {{ item.key }}"
+- name: Include rsyncd role
   ansible.builtin.include_role:
     name: rsyncd
     tasks_from: module
