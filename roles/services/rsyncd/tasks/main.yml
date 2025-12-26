@@ -22,3 +22,9 @@
     content: "{{ rsyncd_motd }}"
     dest: "{{ rsyncd_motd_file }}"
     mode: '0644'
+
+- name: Start and enable rsyncd
+  ansible.builtin.service:
+    name: rsync
+    state: started
+    enabled: true
