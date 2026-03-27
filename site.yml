@@ -1,4 +1,7 @@
 ---
+# breaks idempotency: mirror modules are supposed to be appended dynamically
+# in their respective role by importing `rsyncd` role with tasks_from set to
+# `module.yml`
 - name: Import rsyncd playbook
   ansible.builtin.import_playbook: playbooks/rsyncd.yml
   when: rsyncd | default(True)
