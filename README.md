@@ -22,14 +22,31 @@ In order of implementation:
 
 ## Usage
 
-TODO
+A fresh virtual machine or container is recommended to run this playbook on managed nodes; Debian 12-13 tested.
+
+On the control node:
+
+1. Install playbook requirements:
+
+    ```shell
+    ansible-galaxy install -r requirements.yml
+    ```
+
+2. Create an inventory file with hosts. Note that only hosts in the **mirrors** group are targetted by the playbook.
+
+3. Configure hosts with vars provided in `inventory.example.yml`, as well as in roles' defaults.
+
+4. Run playbook:
+
+    ```shell
+    ansible-playbook -i inventory site.yml
+    ```
 
 ## Roles
 
-Several repositories may be implemented in a single role, like debian (archive
-and cdimage), toggleable with respective vars.
+### common
 
-### mirrorsync
+#### mirrorsync
 
 Adopted from Arch Linux infrastructure maintainers, mirrorsync is a generic
 role to be [included](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/include_role_module.html)
@@ -42,6 +59,30 @@ The only required variable to be passed down to the role is `mirrorsync_name`,
 based on which all the other options will be dynamically loaded with defaults.
 Then, the actual mirror role has to specify the source url to pull from. See
 all configurable vars and assumed defaults in mirrorsync's main tasks file.
+
+### mirrors
+
+Several repositories may be implemented in a single role, like debian (archive
+and cdimage), toggleable with respective vars.
+
+If a certain distribution's maintainers provide their recommended suite of sync
+scripts, those are preferred to the generic `mirrorsync`.
+
+### services
+
+#### rsyncd
+
+Installs and configures an Rsync server to let others sync from you.
+
+> [!WARNING]
+> The config file is overwritten every time this role runs. Mirror roles are
+> expected to import this role with `tasks_from` set to `module.yml` and
+> appropriate vars passed to the role to ensure the respective rsync module
+> is appended to the config.
+
+#### vsftpd
+
+Install and configures an FTP server for browsing as anonymous user only.
 
 ## License
 
