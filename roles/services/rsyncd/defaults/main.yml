@@ -2,3 +2,4 @@ rsyncd_log_file: /var/log/rsyncd.log
 rsyncd_motd: "Welcome to {{ ansible_fqdn }}!"
 rsyncd_motd_file: /etc/rsyncd.motd
 rsyncd_pid_file: /var/run/rsyncd.pid
+rsyncd_modules: []
