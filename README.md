@@ -74,12 +74,6 @@ scripts, those are preferred to the generic `mirrorsync`.
 
 Installs and configures an Rsync server to let others sync from you.
 
-> [!WARNING]
-> The config file is overwritten every time this role runs. Mirror roles are
-> expected to import this role with `tasks_from` set to `module.yml` and
-> appropriate vars passed to the role to ensure the respective rsync module
-> is appended to the config.
-
 #### vsftpd
 
 Install and configures an FTP server for browsing as anonymous user only.
