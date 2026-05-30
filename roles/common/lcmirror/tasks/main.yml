@@ -12,3 +12,7 @@
     system: true
     password_lock: true
     home: "{{ lcmirror_root }}"
+
+- name: Update package cache
+  ansible.builtin.package:
+    update_cache: true
