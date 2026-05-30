@@ -10,6 +10,6 @@
         enabled: false
         state: stopped
         masked: true
-      when: ansible_virtualization_type == 'lxc'
+      when: ansible_facts["virtualization_type"] == "lxc"
   roles:
     - role: maxhoesel.caddy.caddy_server
