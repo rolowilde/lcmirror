@@ -1,0 +1,34 @@
+---
+dependency:
+  name: galaxy
+  options:
+    requirements-file: requirements.yml
+driver:
+  name: docker
+platforms:
+  - name: "molecule-${MOLECULE_DISTRO_NAME}-${MOLECULE_DISTRO_VERSION}-lcmirror"
+    image: "quay.io/gotmax23/${MOLECULE_DISTRO_NAME}-systemd:${MOLECULE_DISTRO_VERSION}"
+    pre_build_image: true
+    privileged: true
+    cgroupns_mode: host
+    command: /sbin/init
+    tmpfs:
+      - /run
+      - /tmp
+    groups:
+      - mirrors
+provisioner:
+  name: ansible
+  env:
+    ANSIBLE_ROLES_PATH: ../../.ansible/roles:../../roles/common:../../roles/mirrors:../../roles/services
+    INJECT_FACTS_AS_VARS: true
+  inventory:
+    group_vars:
+      mirrors:
+        lcmirror_root: /srv/mirror
+        caddy_config_mode: Caddyfile
+        caddy_caddyfile: |
+          http:// {
+            root * {{ lcmirror_root }}
+            file_server browse
+          }

@@ -1,0 +1,69 @@
+---
+- name: Verify
+  hosts: mirrors
+  gather_facts: false
+  tasks:
+    - name: Check mirror user exists
+      ansible.builtin.command: id mirror
+      changed_when: false
+
+    - name: Stat mirror root
+      ansible.builtin.stat:
+        path: /srv/mirror
+      register: mirror_root
+
+    - name: Assert mirror root is a directory
+      ansible.builtin.assert:
+        that: mirror_root.stat.isdir is defined and mirror_root.stat.isdir
+
+    - name: Find mirrorsync scripts
+      ansible.builtin.find:
+        paths: /usr/local/bin
+        patterns: "mirrorsync-*"
+      register: scripts
+
+    - name: Assert at least one mirrorsync script exists
+      ansible.builtin.assert:
+        that: scripts.matched > 0
+        fail_msg: "No mirrorsync scripts found in /usr/local/bin"
+
+    - name: Check rsyncd config exists
+      ansible.builtin.stat:
+        path: /etc/rsyncd.conf
+      register: rsyncd_conf
+
+    - name: Assert rsyncd config exists
+      ansible.builtin.assert:
+        that: rsyncd_conf.stat.exists
+
+    - name: Check vsftpd config exists
+      ansible.builtin.stat:
+        path: /etc/vsftpd.conf
+      register: vsftpd_conf
+
+    - name: Assert vsftpd config exists
+      ansible.builtin.assert:
+        that: vsftpd_conf.stat.exists
+
+    - name: Gather service facts
+      ansible.builtin.service_facts:
+
+    - name: Assert cron is running
+      ansible.builtin.assert:
+        that: ansible_facts.services['cron.service'].state == 'running'
+        fail_msg: "cron.service is not running"
+
+    - name: Assert rsyncd is running
+      ansible.builtin.assert:
+        that: ansible_facts.services['rsync.service'].state == 'running'
+        fail_msg: "rsync.service is not running"
+
+    - name: Assert caddy is running
+      ansible.builtin.assert:
+        that: ansible_facts.services['caddy.service'].state == 'running'
+        fail_msg: "caddy.service is not running"
+
+    - name: Assert vsftpd is running
+      ansible.builtin.assert:
+        that: ansible_facts.services['vsftpd.service'].state == 'running'
+        fail_msg: "vsftpd.service is not running"
