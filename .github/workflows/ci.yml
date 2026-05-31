@@ -28,6 +28,8 @@ jobs:
     strategy:
       matrix:
         distro:
+          - name: almalinux
+            version: "10"
           - name: debian
             version: "13"
       fail-fast: false
