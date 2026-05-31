@@ -2,9 +2,17 @@ name: CI
 
 on:
   pull_request:
+    paths:
+      - "**.ya?ml"
+      - "!*.example.ya?ml"
+      - ".ansible-lint.ya?ml"
+      - ansible.cfg
   push:
-    branches:
-      - main
+    paths:
+      - "**.ya?ml"
+      - "!*.example.ya?ml"
+      - ".ansible-lint.ya?ml"
+      - ansible.cfg
 jobs:
   lint:
     name: Lint
