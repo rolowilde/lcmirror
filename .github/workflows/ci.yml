@@ -24,7 +24,7 @@ jobs:
         uses: ansible/ansible-lint@main
   test:
     name: Test
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         distro:
@@ -36,8 +36,6 @@ jobs:
 
       - name: Install uv
         uses: astral-sh/setup-uv@v8.1.0
-        with:
-          enable-cache: true
 
       - name: Install molecule
         run: uv tool install --with-executables-from ansible-core --with 'molecule-plugins[docker]' molecule
