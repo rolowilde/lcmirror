@@ -22,3 +22,30 @@ jobs:
 
       - name: Run ansible-lint
         uses: ansible/ansible-lint@main
+  test:
+    name: Test
+    runs-on: ubuntu-slim
+    strategy:
+      matrix:
+        distro:
+          - name: debian
+            version: "13"
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.1.0
+        with:
+          enable-cache: true
+
+      - name: Install molecule
+        run: uv tool install --with 'molecule-plugins[docker]' molecule
+
+      - name: Run molecule
+        run: molecule test
+        env:
+          PY_COLORS: "1"
+          ANSIBLE_FORCE_COLOR: "1"
+          MOLECULE_DISTRO_NAME: ${{ matrix.distro.name }}
+          MOLECULE_DISTRO_VERSION: ${{ matrix.distro.version }}
