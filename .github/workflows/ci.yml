@@ -40,7 +40,7 @@ jobs:
           enable-cache: true
 
       - name: Install molecule
-        run: uv tool install --with 'molecule-plugins[docker]' molecule
+        run: uv tool install --with-executables-from ansible-core --with 'molecule-plugins[docker]' molecule
 
       - name: Run molecule
         run: molecule test
